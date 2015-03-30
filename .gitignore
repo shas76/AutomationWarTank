@@ -1,0 +1,14 @@
+##For Intellij IDEA 
+*.iml
+.idea/
+
+##Temp files
+*~
+
+## Eclipse IDE
+AutomationWarTank/.project
+AutomationWarTank/.settings/
+AutomationWarTank/.bin/
+AutomationWarTank/.classpath
+AutomationWarTank/bin/
+
