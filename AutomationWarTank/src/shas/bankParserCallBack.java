@@ -4,33 +4,35 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class bankParserCallBack
-  extends goToURLFinderParserCallBack
-{
-  private boolean noMoreCalculte = false;
-  
-  public bankParserCallBack()
-  {
-    this.defaultGoToURL = "http://wartank.net/buildings";
-  }
-  
-  public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int pos)
-  {
-    if (this.noMoreCalculte) {
-      return;
-    }
-    if (tag == HTML.Tag.A)
-    {
-      Object attribute = attributes.getAttribute(HTML.Attribute.HREF);
-      String href = "http://wartank.net/production/" + 
-        (String)attribute;
-      if ((href.contains(AutomationWarTank.bankProduction)) && 
-        (!href.contains("upgradeLink")))
-      {
-        this.URL = href;
-        this.noMoreCalculte = true;
-        AutomationWarTank.Logging("Bank producing started!!!");
-      }
-    }
-  }
+class BankParserCallBack extends GoToURLFinderParserCallBack {
+
+	private boolean noMoreCalculte = false;
+
+	public BankParserCallBack() {
+		super();
+		defaultGoToURL = AutomationWarTank.siteAddress
+				+ AutomationWarTank.buildingsTab;
+	}
+
+	@Override
+	public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
+		if (noMoreCalculte)
+			return;
+		if (tag == Tag.A) {
+			Object attribute = attributes.getAttribute(Attribute.HREF);
+			String href = AutomationWarTank.siteAddress
+					+ AutomationWarTank.ProductionPath + (String) attribute;
+
+			if (href.contains(AutomationWarTank.bankProduction)
+					&& !href.contains("upgradeLink")) {
+				URL = href;
+				noMoreCalculte = true;
+				AutomationWarTank.Logging("Bank producing started!!!");
+
+			}
+
+		}
+
+	}
+
 }

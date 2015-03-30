@@ -8,335 +8,314 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class fightParserCallBack
-  extends goToURLFinderParserCallBack
-{
-  private boolean noMoreCalculte = false;
-  private Date timeLeft = null;
-  private int myDurability;
-  private int enemyDurability;
-  private int countSpecialShells;
-  private int levelNestedTables = 0;
-  private int calculatingParameter = 0;
-  private boolean inRepairLink = false;
-  private boolean inManeuverLink = false;
-  private boolean inAttackSpecialShellLink = false;
-  private int[] tableColumnsNumber = new int[20];
-  private String attackRegularShellLink = "";
-  private String attackSpecialShellLink = "";
-  private String repairLink;
-  private String repairLinkBody;
-  private String maneuverLink;
-  private String maneverLinkBody;
-  private String changeTargetLink;
-  private String enemyName;
-  private StringWriter fighterLog = new StringWriter();
-  
-  public fightParserCallBack()
-  {
-    this.defaultGoToURL = "http://wartank.net/angar";
-    
-    this.timeOut = 7050L;
-  }
-  
-  public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int pos)
-  {
-    if (this.noMoreCalculte) {
-      return;
-    }
-    if (tag == HTML.Tag.A)
-    {
-      Object attribute = attributes.getAttribute(HTML.Attribute.HREF);
-      String href = "http://wartank.net/" + 
-        (String)attribute;
-      if (href.contains("currentOverview"))
-      {
-        this.URL = href;
-        if (this.timeLeft != null) {
-          this.timeOut = 
-          
-            (this.timeLeft.getTime() - 20000L + TimeZone.getDefault().getOffset(
-            this.timeLeft.getTime()));
-        }
-        this.noMoreCalculte = true;
-        
-        AutomationWarTank.Logging("Applay Button 'Platoon, lets roll! Attack!' !!!");
-      }
-      if (href.contains("refresh"))
-      {
-        this.URL = href;
-        if (this.timeLeft != null) {
-          this.timeOut = 
-          
-            (this.timeLeft.getTime() - 20000L + TimeZone.getDefault().getOffset(
-            this.timeLeft.getTime()));
-        }
-        this.noMoreCalculte = true;
-        AutomationWarTank.Logging("refresh");
-      }
-      if (href.contains("attackRegularShellLink")) {
-        this.attackRegularShellLink = href;
-      }
-      if (href.contains("changeTargetLink")) {
-        this.changeTargetLink = href;
-      }
-      if (href.contains("attackSpecialShellLink"))
-      {
-        this.inAttackSpecialShellLink = true;
-        this.attackSpecialShellLink = href;
-      }
-      if (href.contains("repairLink"))
-      {
-        this.repairLink = href;
-        this.inRepairLink = true;
-      }
-      if (href.contains("maneuverLink"))
-      {
-        this.maneuverLink = href;
-        this.inManeuverLink = true;
-      }
-    }
-    if (tag == HTML.Tag.TABLE) {
-      this.levelNestedTables += 1;
-    }
-    if (tag == HTML.Tag.TR) {
-      this.tableColumnsNumber[this.levelNestedTables] = 0;
-    }
-    if (tag == HTML.Tag.TD) {
-      this.tableColumnsNumber[this.levelNestedTables] += 1;
-    }
-  }
-  
-  public void handleSimpleTag(HTML.Tag arg0, MutableAttributeSet arg1, int arg2)
-  {
-    if (arg0 == HTML.Tag.BR) {
-      this.fighterLog.write("\r\n");
-    }
-    super.handleSimpleTag(arg0, arg1, arg2);
-  }
-  
-  public void handleText(char[] data, int pos)
-  {
-    if (this.noMoreCalculte) {
-      return;
-    }
-    String bodyText = new String(data);
-    if (this.levelNestedTables == 0)
-    {
-      this.fighterLog.write(bodyText);
-      if (bodyText.contains(":")) {
-        this.fighterLog.write("\r\n");
-      }
-    }
-    if (bodyText.contains("starts in"))
-    {
-      String[] wordsInBody = bodyText.split(" ");
-      try
-      {
-        AutomationWarTank.Logging("Time Left on Page:" + wordsInBody[2]);
-        this.timeLeft = new SimpleDateFormat("HH:mm:ss")
-          .parse(wordsInBody[2]);
-        AutomationWarTank.Logging("Time Left:" + 
-          String.valueOf(this.timeLeft.getTime()));
-      }
-      catch (ParseException e)
-      {
-        e.printStackTrace();
-      }
-    }
-    if (this.tableColumnsNumber[2] == 2)
-    {
-      if (this.calculatingParameter == 1)
-      {
-        try
-        {
-          this.enemyDurability = Integer.parseInt(bodyText);
-        }
-        catch (NumberFormatException e)
-        {
-          this.enemyDurability = 1000;
-        }
-        AutomationWarTank.Logging("Enemy Durability:" + this.enemyDurability);
-      }
-      if (this.calculatingParameter == 0)
-      {
-        this.calculatingParameter += 1;
-        try
-        {
-          this.myDurability = Integer.parseInt(bodyText);
-        }
-        catch (NumberFormatException e)
-        {
-          this.myDurability = 1000;
-        }
-        AutomationWarTank.Logging("My Durability:" + this.myDurability);
-      }
-    }
-    if ((this.tableColumnsNumber[1] == 2) && (this.enemyName == null))
-    {
-      this.enemyName = bodyText;
-      AutomationWarTank.Logging("EnemyName:" + this.enemyName);
-    }
-    if (this.inRepairLink) {
-      this.repairLinkBody = bodyText;
-    }
-    if (this.inManeuverLink) {
-      this.maneverLinkBody = bodyText;
-    }
-    if (this.inAttackSpecialShellLink)
-    {
-      String[] splitedBody = bodyText.split("[()]");
-      try
-      {
-        this.countSpecialShells = Integer.parseInt(splitedBody[1]);
-      }
-      catch (NumberFormatException e)
-      {
-        this.countSpecialShells = 0;
-      }
-      AutomationWarTank.Logging(
-        "Count Special Shells:" + this.countSpecialShells);
-    }
-  }
-  
-  public void handleEndTag(HTML.Tag tag, int pos)
-  {
-    if (this.noMoreCalculte) {
-      return;
-    }
-    if (tag == HTML.Tag.A)
-    {
-      this.inRepairLink = false;
-      this.inManeuverLink = false;
-      this.inAttackSpecialShellLink = false;
-    }
-    if (tag == HTML.Tag.TABLE) {
-      this.levelNestedTables -= 1;
-    }
-    if (tag == HTML.Tag.TR) {
-      this.tableColumnsNumber[this.levelNestedTables] -= 1;
-    }
-  }
-  
-  public void afterParse()
-  {
-    if (this.URL.equals("")) {
-      if ((this.repairLinkBody.contains("Repair kit")) && 
-        (this.myDurability < AutomationWarTank.maxDurability4UsingRepaer))
-      {
-        this.URL = this.repairLink;
-        this.timeOut = 0L;
-        AutomationWarTank.skipWaiting = true;
-        AutomationWarTank.Logging("Use Repair!");
-      }
-      else if (this.maneverLinkBody.contains("Maneuver"))
-      {
-        this.URL = this.maneuverLink;
-        this.timeOut = 0L;
-        AutomationWarTank.skipWaiting = true;
-        AutomationWarTank.Logging("Maneuver!");
-      }
-      else
-      {
-        boolean allied = false;
-        boolean isAlliedException = false;
-        if (AutomationWarTank.alliedExceptions.contains(this.enemyName.toLowerCase()))
-        {
-          isAlliedException = true;
-          this.fighterLog.write("\r\nAllied Exception:" + 
-            this.enemyName + "\r\n");
-        }
-        if (!isAlliedException) {
-          for (String alliance : AutomationWarTank.allied) {
-            if (this.enemyName.toLowerCase().contains(alliance))
-            {
-              allied = true;
-              break;
-            }
-          }
-        }
-        if (allied)
-        {
-          if (AutomationWarTank.countSkippedPlayers == AutomationWarTank.limitChangeTarget)
-          {
-            this.URL = this.maneuverLink;
-            this.fighterLog
-              .write("\r\ncountSkippedPlayers == limitChangeTarget. Friend= " + 
-              this.enemyName + 
-              ". Go to maneuver\r\n");
-            this.timeOut = 1000L;
-          }
-          else
-          {
-            this.URL = this.changeTargetLink;
-            this.timeOut = 1000L;
-            this.fighterLog.write("\r\nSkip our friend! " + 
-              this.enemyName + "\r\n");
-            this.fighterLog.write("\r\nCountSkippedPlayers: " + 
-              AutomationWarTank.countSkippedPlayers + 
-              "\r\n");
-            
-            AutomationWarTank.countSkippedPlayers += 1;
-            AutomationWarTank.Logging("Skip our friend! " + 
-              this.enemyName);
-            AutomationWarTank.Logging("CountSkippedPlayers: " + 
-              AutomationWarTank.countSkippedPlayers);
-          }
-        }
-        else
-        {
-          AutomationWarTank.countSkippedPlayers = 0;
-          AutomationWarTank.Logging("CountSkippedPlayers: " + 
-            AutomationWarTank.countSkippedPlayers);
-          if ((!this.attackSpecialShellLink.equals("")) && 
-            (this.countSpecialShells > AutomationWarTank.limitUsingSpecialShell) && 
-            (this.enemyDurability > AutomationWarTank.enemyDurabilityLimitUsingSpecialShell))
-          {
-            this.URL = this.attackSpecialShellLink;
-            if (AutomationWarTank.skipWaiting)
-            {
-              this.timeOut = 0L;
-              AutomationWarTank.skipWaiting = false;
-            }
-          }
-          else if (!this.attackRegularShellLink.equals(""))
-          {
-            this.URL = this.attackRegularShellLink;
-            if (AutomationWarTank.skipWaiting)
-            {
-              this.timeOut = 0L;
-              AutomationWarTank.skipWaiting = false;
-            }
-            else if ((this.enemyDurability < AutomationWarTank.enemyDurabilityLimitUsingShortTimeReload) && 
-              (this.enemyDurability > 0))
-            {
-              this.timeOut = 4000L;
-            }
-          }
-        }
-      }
-    }
-    try
-    {
-      PrintStream printStream = new PrintStream(new FileOutputStream(
-        AutomationWarTank.fighterLogFileName, true));
-      printStream.print(this.fighterLog.toString());
-      printStream.close();
-    }
-    catch (FileNotFoundException e)
-    {
-      AutomationWarTank.Logging(e);
-    }
-    if (Math.abs(this.timeOut) > 300000L) {
-      this.timeOut = 10000L;
-    }
-    if (this.timeOut < 0L) {
-      this.timeOut = 1000L;
-    }
-    super.afterParse();
-  }
+class FightParserCallBack extends GoToURLFinderParserCallBack {
+
+	private boolean noMoreCalculte = false;
+	private Date timeLeft = null;
+	private int myDurability;
+	private int enemyDurability;
+	private int countSpecialShells;
+	private int levelNestedTables = 0;
+	private int calculatingParameter = 0;
+	// private int columnNumer = 0;
+	private boolean inRepairLink = false;
+	private boolean inManeuverLink = false;
+	private boolean inAttackSpecialShellLink = false;
+	private int[] tableColumnsNumber = new int[20];
+
+	private String attackRegularShellLink = "";
+	private String attackSpecialShellLink = "";
+	private String repairLink;
+	private String repairLinkBody;
+	private String maneuverLink;
+	private String maneverLinkBody;
+	private String changeTargetLink;
+	private String enemyName;
+
+	private StringWriter fighterLog = new StringWriter();
+
+	public FightParserCallBack() {
+		super();
+		defaultGoToURL = AutomationWarTank.siteAddress
+				+ AutomationWarTank.angarTab;
+		timeOut = 7050;
+	}
+
+	@Override
+	public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
+		if (noMoreCalculte)
+			return;
+		if (tag == Tag.A) {
+			Object attribute = attributes.getAttribute(Attribute.HREF);
+			String href = AutomationWarTank.siteAddress + "/"
+					+ (String) attribute;
+
+			if (href.contains("currentOverview")) {
+				URL = href;
+				if (timeLeft != null) {
+					timeOut = timeLeft.getTime()
+							- 20000 // Applay before 20 sec
+							+ TimeZone.getDefault().getOffset(
+									timeLeft.getTime());
+				}
+				noMoreCalculte = true;
+				AutomationWarTank
+						.Logging("Applay Button 'Platoon, lets roll! Attack!' !!!");
+
+			}
+			if (href.contains(AutomationWarTank.REFRESH)) {
+				URL = href;
+				if (timeLeft != null) {
+					timeOut = timeLeft.getTime()
+							- 20000 // Applay before 20 sec
+							+ TimeZone.getDefault().getOffset(
+									timeLeft.getTime());
+				}
+
+				noMoreCalculte = true;
+				AutomationWarTank.Logging(AutomationWarTank.REFRESH);
+
+			}
+
+			if (href.contains("attackRegularShellLink")) {
+				attackRegularShellLink = href;
+			}
+			if (href.contains("changeTargetLink")) {
+				changeTargetLink = href;
+			}
+			if (href.contains("attackSpecialShellLink")) {
+				inAttackSpecialShellLink = true;
+				attackSpecialShellLink = href;
+			}
+			if (href.contains("repairLink")) {
+				repairLink = href;
+				inRepairLink = true;
+			}
+			if (href.contains("maneuverLink")) {
+				maneuverLink = href;
+				inManeuverLink = true;
+			}
+		}
+
+		if (tag == Tag.TABLE) {
+			levelNestedTables++;
+		}
+		if (tag == Tag.TR) {
+			tableColumnsNumber[levelNestedTables] = 0;
+		}
+		if (tag == Tag.TD) {
+			tableColumnsNumber[levelNestedTables]++;
+		}
+	}
+
+	@Override
+	public void handleSimpleTag(Tag arg0, MutableAttributeSet arg1, int arg2) {
+		if (arg0 == Tag.BR) {
+			fighterLog.write("\r\n");
+		}
+		super.handleSimpleTag(arg0, arg1, arg2);
+	}
+
+	@Override
+	public void handleText(char[] data, int pos) {
+		if (noMoreCalculte)
+			return;
+
+		String bodyText = new String(data);
+		if (levelNestedTables == 0) {
+			fighterLog.write(bodyText);
+			// if (bodyText.contains("CampaignsTanks in the battle:") ||
+			// bodyText.contains("BattleTanks in the battle:")){
+			// fighterLog.write("\r\n");
+			// }
+			if (bodyText.contains(":")) {
+				fighterLog.write("\r\n");
+			}
+		}
+		if (bodyText.contains("starts in")) {
+			String[] wordsInBody = bodyText.split(" ");
+			try {
+				AutomationWarTank
+						.Logging("Time Left on Page:" + wordsInBody[2]);
+				timeLeft = new SimpleDateFormat("HH:mm:ss")
+						.parse(wordsInBody[2]);
+				AutomationWarTank.Logging("Time Left:"
+						+ String.valueOf(timeLeft.getTime()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		if (tableColumnsNumber[2] == 2) {
+			if (calculatingParameter == 1) {
+				try {
+					enemyDurability = Integer.parseInt(bodyText);
+				} catch (NumberFormatException e) {
+					enemyDurability = 1000;
+				}
+				AutomationWarTank
+						.Logging("Enemy Durability:" + enemyDurability);
+			}
+			if (calculatingParameter == 0) {
+				calculatingParameter++;
+				try {
+					myDurability = Integer.parseInt(bodyText);
+				} catch (NumberFormatException e) {
+					myDurability = 1000;
+				}
+				AutomationWarTank.Logging("My Durability:" + myDurability);
+			}
+
+		}
+		if (tableColumnsNumber[1] == 2 && enemyName == null) {
+			enemyName = bodyText;
+			AutomationWarTank.Logging("EnemyName:" + enemyName);
+		}
+
+		if (inRepairLink) {
+			repairLinkBody = bodyText;
+		}
+
+		if (inManeuverLink) {
+			maneverLinkBody = bodyText;
+		}
+		if (inAttackSpecialShellLink) {
+			String[] splitedBody = bodyText.split("[()]");
+			try {
+				countSpecialShells = Integer.parseInt(splitedBody[1]);
+			} catch (NumberFormatException e) {
+				countSpecialShells = 0;
+			}
+			AutomationWarTank.Logging("Count Special Shells:"
+					+ countSpecialShells);
+		}
+	}
+
+	@Override
+	public void handleEndTag(Tag tag, int pos) {
+		if (noMoreCalculte)
+			return;
+		if (tag == Tag.A) {
+			inRepairLink = false;
+			inManeuverLink = false;
+			inAttackSpecialShellLink = false;
+		}
+		if (tag == Tag.TABLE) {
+			levelNestedTables--;
+		}
+		if (tag == Tag.TR) {
+			tableColumnsNumber[levelNestedTables]--;
+		}
+	}
+
+	@Override
+	public void afterParse() {
+
+		if (URL.equals("")) {
+			if (repairLinkBody.contains("Repair kit")
+					&& myDurability < AutomationWarTank.maxDurability4UsingRepaer) {
+				URL = repairLink;
+				timeOut = 0;
+				AutomationWarTank.skipWaiting = true;
+				AutomationWarTank.Logging("Use Repair!");
+			} else {
+
+				if (maneverLinkBody.contains("Maneuver")) {
+					URL = maneuverLink;
+					timeOut = 0;
+					AutomationWarTank.skipWaiting = true;
+					AutomationWarTank.Logging("Maneuver!");
+				} else {
+					boolean allied = false;
+					boolean isAlliedException = false;
+					if (AutomationWarTank.alliedExceptions.contains(enemyName
+							.toLowerCase())) {
+						isAlliedException = true;
+						fighterLog.write("\r\n" + "Allied Exception:"
+								+ enemyName + "\r\n");
+					}
+					if (!isAlliedException) {
+						for (String alliance : AutomationWarTank.allied) {
+							if (enemyName.toLowerCase().contains(alliance)) {
+								allied = true;
+								break;
+							}
+
+						}
+					}
+					if (allied) {
+						if (AutomationWarTank.countSkippedPlayers == AutomationWarTank.limitChangeTarget) {
+							URL = maneuverLink;
+							fighterLog
+									.write("\r\ncountSkippedPlayers == limitChangeTarget. Friend= "
+											+ enemyName
+											+ ". Go to maneuver\r\n");
+							timeOut = 1000;
+						} else {
+							URL = changeTargetLink;
+							timeOut = 1000;
+							fighterLog.write("\r\n" + "Skip our friend! "
+									+ enemyName + "\r\n");
+							fighterLog.write("\r\n" + "CountSkippedPlayers: "
+									+ AutomationWarTank.countSkippedPlayers
+									+ "\r\n");
+
+							AutomationWarTank.countSkippedPlayers++;
+							AutomationWarTank.Logging("Skip our friend! "
+									+ enemyName);
+							AutomationWarTank.Logging("CountSkippedPlayers: "
+									+ AutomationWarTank.countSkippedPlayers);
+						}
+					} else {
+						AutomationWarTank.countSkippedPlayers = 0;
+						AutomationWarTank.Logging("CountSkippedPlayers: "
+								+ AutomationWarTank.countSkippedPlayers);
+						if (!attackSpecialShellLink.equals("")
+								&& countSpecialShells > AutomationWarTank.limitUsingSpecialShell
+								&& enemyDurability > AutomationWarTank.enemyDurabilityLimitUsingSpecialShell) {
+							URL = attackSpecialShellLink;
+							if (AutomationWarTank.skipWaiting) {
+								timeOut = 0;
+								AutomationWarTank.skipWaiting = false;
+							}
+							;
+						} else {
+							if (!attackRegularShellLink.equals("")) {
+								URL = attackRegularShellLink;
+								if (AutomationWarTank.skipWaiting) {
+									timeOut = 0;
+									AutomationWarTank.skipWaiting = false;
+								} else {
+									if (enemyDurability < AutomationWarTank.enemyDurabilityLimitUsingShortTimeReload
+											&& enemyDurability > 0) {
+										timeOut = 4000;
+									}
+								}
+							}
+						}
+					}
+
+				}
+			}
+		}
+		PrintStream printStream;
+		try {
+			printStream = new PrintStream(new FileOutputStream(
+					AutomationWarTank.fighterLogFileName, true));
+			printStream.print(fighterLog.toString());
+			printStream.close();
+		} catch (FileNotFoundException e) {
+			AutomationWarTank.Logging(e);
+		}
+		if (Math.abs(timeOut) > 5 * AutomationWarTank.msInMinunte) {
+			timeOut = 10000;
+		}
+		if (timeOut < 0)
+			timeOut = 1000;
+		super.afterParse();
+	}
 }
