@@ -1,0 +1,1 @@
+"%JRE_HOME%\bin\java" -Duser.timezone=Europe/Minsk -jar AutomationWarTank.jar D:\PRIVATE\GitHubRepository\AutomationWarTank\AutomationWarTank.xml
