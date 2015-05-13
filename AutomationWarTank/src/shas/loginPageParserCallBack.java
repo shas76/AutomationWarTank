@@ -4,30 +4,31 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class loginPageParserCallBack
-  extends goToURLFinderParserCallBack
-{
-  public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int pos)
-  {
-    if ((tag == HTML.Tag.FORM) && 
-      ("id1".equals((String)attributes.getAttribute(HTML.Attribute.ID))))
-    {
-      this.URL = 
-        ("http://wartank.net/" + (String)attributes.getAttribute(HTML.Attribute.ACTION));
-      this.Method = ((String)attributes.getAttribute(HTML.Attribute.METHOD));
-    }
-    if (tag == HTML.Tag.A)
-    {
-      Object attribute = attributes.getAttribute(HTML.Attribute.HREF);
-      if (attribute != null)
-      {
-        String href = "http://wartank.net/" + (String)attribute;
-        if (href.contains("-showSigninLink"))
-        {
-          this.URL = href;
-          this.timeOut = 0L;
-        }
-      }
-    }
-  }
+class loginPageParserCallBack extends goToURLFinderParserCallBack {
+
+	@Override
+	public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
+		String href;
+
+		if (tag == Tag.FORM) {
+			if ("id1".equals((String) attributes.getAttribute(Attribute.ID))) {
+				URL = AutomationWarTank.siteAddress + "/"
+						+ (String) attributes.getAttribute(Attribute.ACTION);
+				Method = (String) attributes.getAttribute(Attribute.METHOD);
+		}
+			;
+		}
+		if (tag == Tag.A) {
+			Object attribute = attributes.getAttribute(Attribute.HREF);
+
+			if (attribute != null) {
+				href = AutomationWarTank.siteAddress + "/" + (String) attribute;
+
+				if (href.contains(AutomationWarTank.SHOW_SIGNIN_LINK)) {
+					URL = href;
+					timeOut = 0;
+				}
+			}
+		}
+	}
 }

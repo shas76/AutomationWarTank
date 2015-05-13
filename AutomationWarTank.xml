@@ -15,9 +15,9 @@
 	<LimitUsingSpecialShell>500</LimitUsingSpecialShell>
 	<EnemyDurabilityLimitUsingSpecialShall>250</EnemyDurabilityLimitUsingSpecialShall>
 	<BankProduction>-0-</BankProduction>
-	<EnemyDurabilityLimitUsingShortTimeReload>500</EnemyDurabilityLimitUsingShortTimeReload>
+	<EnemyDurabilityLimitUsingShortTimeReload>200</EnemyDurabilityLimitUsingShortTimeReload>
 	<MaxDurability4UsingRepaer>300</MaxDurability4UsingRepaer>
-        <FighterLogFileName>D:\PRIVATE\AutomationWarTank\fighterLog.txt</FighterLogFileName>
+        <FighterLogFileName>D:\PRIVATE\GitHubRepository\AutomationWarTank\fighterLog.txt</FighterLogFileName>
         <Allied>"rzr ","mk ", "nl ", "ol ","mp ", "janek lawisz", "nop ", "nightmares"</Allied>
         <LimitChangeTarget>5</LimitChangeTarget>
 	<UserName>Rzr shas</UserName>>
