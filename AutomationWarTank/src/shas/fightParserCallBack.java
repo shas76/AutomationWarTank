@@ -272,6 +272,9 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 							}
 							;
 						} else {
+							if (!AutomationWarTank.goToURL.contains(AutomationWarTank.dmTab)){
+								
+							}
 							if (!attackRegularShellLink.equals("")) {
 								URL = attackRegularShellLink;
 								if (AutomationWarTank.skipWaiting) {

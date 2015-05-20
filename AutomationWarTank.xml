@@ -18,7 +18,7 @@
 	<EnemyDurabilityLimitUsingShortTimeReload>200</EnemyDurabilityLimitUsingShortTimeReload>
 	<MaxDurability4UsingRepaer>300</MaxDurability4UsingRepaer>
         <FighterLogFileName>D:\PRIVATE\GitHubRepository\AutomationWarTank\fighterLog.txt</FighterLogFileName>
-        <Allied>"rzr ","mk ", "nl ", "ol ","mp ", "janek lawisz", "nop ", "nightmares"</Allied>
+        <Allied>"rzr ","mk ", "nl ", "ol ","mp ", "janek lawisz", "nop ", "nightmares", "how"</Allied>
         <LimitChangeTarget>5</LimitChangeTarget>
 	<UserName>Rzr shas</UserName>>
 	<Password>Kp19Gd78M</Password>
