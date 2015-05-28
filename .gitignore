@@ -11,5 +11,7 @@ AutomationWarTank/.settings/
 AutomationWarTank/.bin/
 AutomationWarTank/.classpath
 AutomationWarTank/bin/
-fighterLog.txt
 
+#main files
+fighterLog.txt
+AutomationWarTank.jar
