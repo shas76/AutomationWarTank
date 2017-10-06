@@ -4,21 +4,17 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class BattleParserCallBack extends GoToURLFinderParserCallBack {
-
+class battleParserCallBack extends goToURLFinderParserCallBack {
 	private int fuel;
-
 	private boolean isFuel = false;
 	private String tagBody;
 	private boolean noMoreCalculte = false;
-	// private boolean needCheckConvoy = false;
-	// private boolean firstAttack = false;
 	private String href;
 
-	public BattleParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.angarTab;
+	public battleParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress
+				+ Consts.angarTab;
 	}
 
 	@Override
@@ -34,7 +30,6 @@ class BattleParserCallBack extends GoToURLFinderParserCallBack {
 				}
 
 			}
-
 		}
 	}
 
@@ -46,22 +41,14 @@ class BattleParserCallBack extends GoToURLFinderParserCallBack {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
 			if (attribute != null) {
-				href = AutomationWarTank.siteAddress + "/" + (String) attribute;
-				// Check convoy URL
-				// if (href.contains("convoy")) {
-				// needCheckConvoy = true;
-				// firstAttack = true;
-				// }
-
+				href = Consts.siteAddress + "/" + (String) attribute;
 				// Check attack URL
 
 				if ((href.contains("-opponents-") && fuel >= 105)
 						|| href.contains("-lastOpponentPanel-")) {
-					// if ((firstAttack && fuel >= 105) || !firstAttack) {
 					URL = href;
 					noMoreCalculte = true;
 					AutomationWarTank.Logging("Attack!!!");
-					// }
 				}
 
 				if (href.contains("showOtherOpps")) {
@@ -69,11 +56,8 @@ class BattleParserCallBack extends GoToURLFinderParserCallBack {
 					noMoreCalculte = true;
 					AutomationWarTank.Logging("New opponents");
 				}
-
 			}
-
 		}
-
 	}
 
 	@Override
@@ -81,13 +65,6 @@ class BattleParserCallBack extends GoToURLFinderParserCallBack {
 		if (noMoreCalculte)
 			return;
 		tagBody = new String(data);
-		// if (needCheckConvoy && tagBody.equals("+")) {
-		// URL = href;
-		// noMoreCalculte = true;
-		
-		// AutomationWarTank.Logging("Need Goto Escort");
-		// needCheckConvoy = false;
-		// }
 	}
 
 	@Override
@@ -101,11 +78,5 @@ class BattleParserCallBack extends GoToURLFinderParserCallBack {
 				AutomationWarTank.Logging("Fuel:" + fuel);
 			}
 		}
-		// if (tag == Tag.DIV) {
-		// Check convoy URL
-		// if (needCheckConvoy) {
-		// needCheckConvoy = false;
-		// }
-		// }
 	}
 }

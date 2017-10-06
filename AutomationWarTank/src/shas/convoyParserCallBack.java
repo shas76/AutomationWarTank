@@ -4,14 +4,13 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class ConvoyParserCallBack extends GoToURLFinderParserCallBack {
-
+class convoyParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 
-	public ConvoyParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.battleTab;
+	public convoyParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress
+				+ Consts.battleTab;
 	}
 
 	@Override
@@ -22,7 +21,7 @@ class ConvoyParserCallBack extends GoToURLFinderParserCallBack {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
 			if (attribute != null) {
-				String href = AutomationWarTank.siteAddress + "/"
+				String href = Consts.siteAddress + "/"
 						+ (String) attribute;
 				// Check attack URL
 				if (href.contains("findEnemy") || href.contains("startFight")
@@ -33,11 +32,7 @@ class ConvoyParserCallBack extends GoToURLFinderParserCallBack {
 					noMoreCalculte = true;
 					AutomationWarTank.Logging("Attack Convoy!!!");
 				}
-
 			}
-
 		}
-
 	}
-
 }

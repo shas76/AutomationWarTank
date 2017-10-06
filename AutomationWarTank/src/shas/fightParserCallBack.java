@@ -13,8 +13,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class FightParserCallBack extends GoToURLFinderParserCallBack {
-
+class fightParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 	private Date timeLeft = null;
 	private int myDurability;
@@ -22,7 +21,6 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 	private int countSpecialShells;
 	private int levelNestedTables = 0;
 	private int calculatingParameter = 0;
-	// private int columnNumer = 0;
 	private boolean inRepairLink = false;
 	private boolean inManeuverLink = false;
 	private boolean inAttackSpecialShellLink = false;
@@ -36,14 +34,12 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 	private String maneverLinkBody;
 	private String changeTargetLink;
 	private String enemyName;
-
 	private StringWriter fighterLog = new StringWriter();
 
-	public FightParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.angarTab;
-		timeOut = 7050;
+	public fightParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress + Consts.angarTab;
+		timeOut = 6050;
 	}
 
 	@Override
@@ -52,8 +48,7 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 			return;
 		if (tag == Tag.A) {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
-			String href = AutomationWarTank.siteAddress + "/"
-					+ (String) attribute;
+			String href = Consts.siteAddress + "/" + (String) attribute;
 
 			if (href.contains("currentOverview")) {
 				URL = href;
@@ -66,9 +61,8 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 				noMoreCalculte = true;
 				AutomationWarTank
 						.Logging("Applay Button 'Platoon, lets roll! Attack!' !!!");
-
 			}
-			if (href.contains(AutomationWarTank.REFRESH)) {
+			if (href.contains(Consts.REFRESH)) {
 				URL = href;
 				if (timeLeft != null) {
 					timeOut = timeLeft.getTime()
@@ -78,10 +72,9 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 				}
 
 				noMoreCalculte = true;
-				AutomationWarTank.Logging(AutomationWarTank.REFRESH);
+				AutomationWarTank.Logging(Consts.REFRESH);
 
 			}
-
 			if (href.contains("attackRegularShellLink")) {
 				attackRegularShellLink = href;
 			}
@@ -129,10 +122,6 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 		String bodyText = new String(data);
 		if (levelNestedTables == 0) {
 			fighterLog.write(bodyText);
-			// if (bodyText.contains("CampaignsTanks in the battle:") ||
-			// bodyText.contains("BattleTanks in the battle:")){
-			// fighterLog.write("\r\n");
-			// }
 			if (bodyText.contains(":")) {
 				fighterLog.write("\r\n");
 			}
@@ -169,7 +158,6 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 				}
 				AutomationWarTank.Logging("My Durability:" + myDurability);
 			}
-
 		}
 		if (tableColumnsNumber[1] == 2 && enemyName == null) {
 			enemyName = bodyText;
@@ -220,14 +208,13 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 					&& myDurability < AutomationWarTank.maxDurability4UsingRepaer) {
 				URL = repairLink;
 				timeOut = 0;
-				AutomationWarTank.skipWaiting = true;
+				GlobalVars.skipWaiting = true;
 				AutomationWarTank.Logging("Use Repair!");
 			} else {
-
 				if (maneverLinkBody.contains("Maneuver")) {
 					URL = maneuverLink;
 					timeOut = 0;
-					AutomationWarTank.skipWaiting = true;
+					GlobalVars.skipWaiting = true;
 					AutomationWarTank.Logging("Maneuver!");
 				} else {
 					boolean allied = false;
@@ -244,7 +231,6 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 								allied = true;
 								break;
 							}
-
 						}
 					}
 					if (allied) {
@@ -274,25 +260,34 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 						AutomationWarTank.countSkippedPlayers = 0;
 						AutomationWarTank.Logging("CountSkippedPlayers: "
 								+ AutomationWarTank.countSkippedPlayers);
-						if (!attackSpecialShellLink.equals("")
-								&& countSpecialShells > AutomationWarTank.limitUsingSpecialShell
-								&& enemyDurability > AutomationWarTank.enemyDurabilityLimitUsingSpecialShell) {
-							URL = attackSpecialShellLink;
-							if (AutomationWarTank.skipWaiting) {
-								timeOut = 0;
-								AutomationWarTank.skipWaiting = false;
-							}
-							;
+						if (enemyDurability > 800
+								&& !currentURL.contains(Consts.dmTab)) {
+							URL = changeTargetLink;
+							timeOut = 500;
 						} else {
-							if (!attackRegularShellLink.equals("")) {
-								URL = attackRegularShellLink;
-								if (AutomationWarTank.skipWaiting) {
+							if (!attackSpecialShellLink.equals("")
+									&& countSpecialShells > AutomationWarTank.limitUsingSpecialShell
+									&& enemyDurability > AutomationWarTank.enemyDurabilityLimitUsingSpecialShell
+									&& (currentURL.contains(Consts.dmTab) || (countSpecialShells > AutomationWarTank.limitUsingSpecialShell + 100))) {
+								URL = attackSpecialShellLink;
+								if (GlobalVars.skipWaiting) {
 									timeOut = 0;
-									AutomationWarTank.skipWaiting = false;
-								} else {
-									if (enemyDurability < AutomationWarTank.enemyDurabilityLimitUsingShortTimeReload
-											&& enemyDurability > 0) {
-										timeOut = 4000;
+									GlobalVars.skipWaiting = false;
+								}
+							} else {
+								if (!currentURL.contains(Consts.dmTab)) {
+
+								}
+								if (!attackRegularShellLink.equals("")) {
+									URL = attackRegularShellLink;
+									if (GlobalVars.skipWaiting) {
+										timeOut = 0;
+										GlobalVars.skipWaiting = false;
+									} else {
+										if (enemyDurability < AutomationWarTank.enemyDurabilityLimitUsingShortTimeReload
+												&& enemyDurability > 0) {
+											timeOut = 4000;
+										}
 									}
 								}
 							}
@@ -311,7 +306,7 @@ class FightParserCallBack extends GoToURLFinderParserCallBack {
 		} catch (FileNotFoundException e) {
 			AutomationWarTank.Logging(e);
 		}
-		if (Math.abs(timeOut) > 5 * AutomationWarTank.msInMinunte) {
+		if (Math.abs(timeOut) > 5 * Consts.msInMinunte) {
 			timeOut = 10000;
 		}
 		if (timeOut < 0)
