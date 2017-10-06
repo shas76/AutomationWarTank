@@ -14,17 +14,15 @@ class buildingsParserCallBack extends goToURLFinderParserCallBack {
 		super.afterParse();
 		if (AutomationWarTank.isTakeProductionMode
 				&& URL.equals(defaultGoToURL)) {
-			URL = AutomationWarTank.siteAddress
-					+ AutomationWarTank.buildingsTab;
+			URL = Consts.siteAddress + Consts.buildingsTab;
 			AutomationWarTank.isTakeProductionMode = false;
 
 		}
 	}
 
-	public buildingsParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.convoyTab;
+	public buildingsParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress + Consts.convoyTab;
 	}
 
 	@Override
@@ -35,7 +33,7 @@ class buildingsParserCallBack extends goToURLFinderParserCallBack {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
 			if (attribute != null) {
-				href = AutomationWarTank.siteAddress + "/" + (String) attribute;
+				href = Consts.siteAddress + "/" + (String) attribute;
 
 				if (href.contains("takeProductionLink")) {
 

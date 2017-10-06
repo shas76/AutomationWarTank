@@ -22,31 +22,6 @@ import org.apache.http.message.*;
 import org.apache.http.util.*;
 
 public class AutomationWarTank {
-	private static final String RMI_SEVER_LOCATOR = "//localhost/AutomationWarTank";
-	static final String GET_METHOD = "GET";
-	static final String POST_METHOD = "POST";
-	static final int request_redirected_302 = 302;
-	static final String siteAddress = "http://wartank.net";
-	static final String ProductionPath = "/production/";
-	static final String timeFormat = "%tF %tT ";
-	static final String battleTab = "/battle";
-	static final String angarTab = "/angar";
-	static final String convoyTab = "/convoy";
-	static final String buildingsTab = "/buildings";
-	static final String mineTab = ProductionPath + "Mine";
-	static final String polygonTab = "/polygon";
-	static final String armoryTab = ProductionPath + "Armory";
-	static final String bankTab = ProductionPath + "Bank";
-	static final String pveTab = "/pve";
-	static final String cwTab = "/cw";
-	static final String dmTab = "/dm";
-	static final String REFRESH = "refresh";
-	static final int msInMinunte = 60 * 1000;
-	static final String SHOW_SIGNIN_LINK = "-showSigninLink";
-	
-
-
-	static final String LocationHeader = "Location";
 
 	static HttpClient httpclient;
 
@@ -72,7 +47,6 @@ public class AutomationWarTank {
 	static int currentMineProduction = 0;
 	static int currentArmoryProduction = 0;
 	static boolean isTakeProductionMode = false;
-	static boolean skipWaiting = false;
 	static int countSkippedPlayers = 0;
 	static int enableBodyLogging = 0;
 	static String userName = "";
@@ -80,17 +54,32 @@ public class AutomationWarTank {
 
 	static int printResponseBoby = 0;
 	private static String responseBody;
-	public  static String goToURL;
+	private static String goToURL;
 	private static String method;
 	private static long timeOut;
 
 	public static void Logging(String message) {
-		System.out.printf(timeFormat + "%s\n", new Date(), new Date(), message);
+		Logging(message, null);
+	}
+
+	public static void Logging(String message, Object object) {
+		String className = object != null ? object.getClass().getName() + ":"
+				: "";
+		System.out.printf(Consts.timeFormat + "%s\n", new Date(), new Date(),
+				className + message);
+	}
+
+	public static void Logging(Exception e, Object object) {
+		String stack = "";
+		for (StackTraceElement str : e.getStackTrace()) {
+			stack += "\t"+str + "\n";
+		}
+		;
+		Logging(stack, null);
 	}
 
 	public static void Logging(Exception e) {
-		System.out.printf(timeFormat, new Date(), new Date());
-		e.printStackTrace();
+		Logging(e, null);
 	}
 
 	public static Date extractTime(Date dateToExtract) throws ParseException {
@@ -247,8 +236,9 @@ public class AutomationWarTank {
 			throw new Exception("Empty URL !!!");
 		}
 		HttpResponse response = httpclient.execute(new HttpGet(URL));
-		if (response.getStatusLine().getStatusCode() == request_redirected_302) {
-			goToURL = getHeaderItem(response.getAllHeaders(), LocationHeader);
+		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
+			goToURL = getHeaderItem(response.getAllHeaders(),
+					Consts.LocationHeader);
 		} else {
 			readContent(response);
 		}
@@ -257,7 +247,7 @@ public class AutomationWarTank {
 
 	private static void executeHttpGetAndParse(String URL) throws Exception {
 
-		if (executeHttpGet(URL) == request_redirected_302) {
+		if (executeHttpGet(URL) == Consts.request_redirected_302) {
 			executeHttpGetAndParse(goToURL);
 		} else {
 			parseHTML(getParserByURL(URL));
@@ -280,8 +270,9 @@ public class AutomationWarTank {
 			httpPost.setEntity(new UrlEncodedFormEntity(requestParams));
 		}
 		HttpResponse response = httpclient.execute(httpPost);
-		if (response.getStatusLine().getStatusCode() == request_redirected_302) {
-			goToURL = getHeaderItem(response.getAllHeaders(), LocationHeader);
+		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
+			goToURL = getHeaderItem(response.getAllHeaders(),
+					Consts.LocationHeader);
 		} else {
 			readContent(response);
 		}
@@ -303,7 +294,7 @@ public class AutomationWarTank {
 
 	private static void executeHttpPostAndParse(String URL,
 			List<NameValuePair> requestParams) throws Exception {
-		if (executeHttpPost(URL, requestParams) == request_redirected_302) {
+		if (executeHttpPost(URL, requestParams) == Consts.request_redirected_302) {
 			executeHttpPostAndParse(goToURL, requestParams);
 		} else {
 			parseHTML(getParserByURL(goToURL));
@@ -321,27 +312,28 @@ public class AutomationWarTank {
 	}
 
 	private static goToURLFinderParserCallBack getParserByURL(String URL) {
-		if (URL.toLowerCase().contains(angarTab.toLowerCase()))
-			return new angarParserCallBack();
-		if (URL.toLowerCase().contains(battleTab.toLowerCase()))
-			return new battleParserCallBack();
-		if (URL.toLowerCase().contains(buildingsTab.toLowerCase()))
-			return new buildingsParserCallBack();
-		if (URL.toLowerCase().contains(convoyTab.toLowerCase()))
-			return new convoyParserCallBack();
-		if (URL.toLowerCase().contains(mineTab.toLowerCase()))
-			return new mineParserCallBack();
-		if (URL.toLowerCase().contains(armoryTab.toLowerCase()))
-			return new armoryParserCallBack();
-		if (URL.toLowerCase().contains(polygonTab.toLowerCase()))
-			return new polygonParserCallBack();
-		if (URL.toLowerCase().contains(bankTab.toLowerCase()))
-			return new bankParserCallBack();
-		if (URL.equals(siteAddress)
-				|| URL.toLowerCase().contains(SHOW_SIGNIN_LINK.toLowerCase()))
-			return new loginPageParserCallBack();
+		if (URL.toLowerCase().contains(Consts.angarTab.toLowerCase()))
+			return new angarParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.battleTab.toLowerCase()))
+			return new battleParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.buildingsTab.toLowerCase()))
+			return new buildingsParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.convoyTab.toLowerCase()))
+			return new convoyParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.mineTab.toLowerCase()))
+			return new mineParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.armoryTab.toLowerCase()))
+			return new armoryParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.polygonTab.toLowerCase()))
+			return new polygonParserCallBack(URL);
+		if (URL.toLowerCase().contains(Consts.bankTab.toLowerCase()))
+			return new bankParserCallBack(URL);
+		if (URL.equals(Consts.siteAddress)
+				|| URL.toLowerCase().contains(
+						Consts.SHOW_SIGNIN_LINK.toLowerCase()))
+			return new loginPageParserCallBack(URL);
 		if (isURLBattle(URL))
-			return new fightParserCallBack();
+			return new fightParserCallBack(URL);
 		return null;
 	}
 
@@ -353,7 +345,7 @@ public class AutomationWarTank {
 			try {
 				if (args[0].toLowerCase().equals("stop")) {
 					StopInterface stopProgram = (StopInterface) Naming
-							.lookup(RMI_SEVER_LOCATOR);
+							.lookup(Consts.RMI_SEVER_LOCATOR);
 					Logging("Send signal for stopping");
 					stopProgram.stop();
 					Logging("Signal was sended");
@@ -361,7 +353,7 @@ public class AutomationWarTank {
 				}
 				if (args[0].toLowerCase().equals("reloadconfig")) {
 					StopInterface stopProgram = (StopInterface) Naming
-							.lookup(RMI_SEVER_LOCATOR);
+							.lookup(Consts.RMI_SEVER_LOCATOR);
 					Logging("Send signal for reload config");
 					stopProgram.reloadConfiguration();
 					Logging("Signal was sended");
@@ -392,7 +384,7 @@ public class AutomationWarTank {
 		StopListener rmiServer;
 		try {
 			rmiServer = new StopListener();
-			Naming.rebind(RMI_SEVER_LOCATOR, rmiServer);
+			Naming.rebind(Consts.RMI_SEVER_LOCATOR, rmiServer);
 			Logging("PeerServer bound in registry");
 		} catch (Exception e) {
 			Logging(e);
@@ -405,7 +397,7 @@ public class AutomationWarTank {
 
 			try {
 
-				executeHttpGetAndParse(siteAddress);
+				executeHttpGetAndParse(Consts.siteAddress);
 				executeHttpGetAndParse(goToURL);
 				// Login for registered users
 				nameValuePairs.add(new BasicNameValuePair("id1_hf_0", ""));
@@ -414,7 +406,7 @@ public class AutomationWarTank {
 						.add(new BasicNameValuePair("password", password));
 				executeHttpPostAndParse(goToURL, nameValuePairs);
 				if (goToURL.equals("")) {
-					goToURL = siteAddress + angarTab;
+					goToURL = Consts.siteAddress + Consts.angarTab;
 				}
 				Date battleTime = null;
 				while (true) {
@@ -428,8 +420,8 @@ public class AutomationWarTank {
 					int index = 0;
 					for (Date time : battleTimes) {
 						if (time.getTime() > currentTime.getTime()
-								&& (time.getTime() - currentTime.getTime() < 6 * msInMinunte)) {
-							battleUrl = siteAddress + battleURLs[index];
+								&& (time.getTime() - currentTime.getTime() < 6 * Consts.msInMinunte)) {
+							battleUrl = Consts.siteAddress + battleURLs[index];
 							TimeForWar = true;
 							battleTime = time;
 							Logging("Goto battle!!! URL" + battleURLs[index]);
@@ -447,18 +439,17 @@ public class AutomationWarTank {
 						if (battleTime != null) {
 							if (isURLBattle(goToURL)
 									&& (currentTime.getTime() - battleTime
-											.getTime()) > 2 * msInMinunte
-									&& goToURL
-											.contains(AutomationWarTank.REFRESH)) {
-								goToURL = siteAddress + angarTab;
+											.getTime()) > 2 * Consts.msInMinunte
+									&& goToURL.contains(Consts.REFRESH)) {
+								goToURL = Consts.siteAddress + Consts.angarTab;
 								battleTime = null;
 							}
 						}
 					}
 					switch (method) {
-					case POST_METHOD:
+					case Consts.POST_METHOD:
 						executeHttpPostAndParse(goToURL);
-					case GET_METHOD:
+					case Consts.GET_METHOD:
 						executeHttpGetAndParse(goToURL);
 					}
 					if (rmiServer.isStop()) {
@@ -475,7 +466,7 @@ public class AutomationWarTank {
 			} catch (Exception e) {
 				Logging(e);
 				try {
-					Thread.sleep(5 * msInMinunte);
+					Thread.sleep(5 * Consts.msInMinunte);
 				} catch (InterruptedException e1) {
 					Logging(e1);
 				}

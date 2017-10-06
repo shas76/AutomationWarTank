@@ -11,10 +11,10 @@ class battleParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 	private String href;
 
-	public battleParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.angarTab;
+	public battleParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress
+				+ Consts.angarTab;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ class battleParserCallBack extends goToURLFinderParserCallBack {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
 			if (attribute != null) {
-				href = AutomationWarTank.siteAddress + "/" + (String) attribute;
+				href = Consts.siteAddress + "/" + (String) attribute;
 				// Check attack URL
 
 				if ((href.contains("-opponents-") && fuel >= 105)

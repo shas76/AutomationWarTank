@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
 
+@SuppressWarnings("unused")
 public class Test {
 	public static void main(String[] args) {
 		try {

@@ -8,14 +8,16 @@ class goToURLFinderParserCallBack extends ParserCallback {
 	protected String defaultGoToURL;
 	protected String defaultGoToMethod;
 	protected long timeOut;
+	protected String currentURL;
 
-	goToURLFinderParserCallBack() {
+	goToURLFinderParserCallBack(String currentURL) {
 		super();
 		defaultGoToURL = "";
-		defaultGoToMethod = AutomationWarTank.GET_METHOD;
+		defaultGoToMethod = Consts.GET_METHOD;
 		URL = "";
 		Method = "";
 		timeOut = 1000;
+		this.currentURL = currentURL;
 	}
 
 	public long getTimeOut() {

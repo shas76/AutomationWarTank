@@ -7,10 +7,9 @@ import javax.swing.text.html.HTML.Tag;
 class mineParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 
-	public mineParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.buildingsTab;
+	public mineParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
 	}
 
 	@Override
@@ -19,8 +18,8 @@ class mineParserCallBack extends goToURLFinderParserCallBack {
 			return;
 		if (tag == Tag.A) {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
-			String href = AutomationWarTank.siteAddress
-					+ AutomationWarTank.ProductionPath + (String) attribute;
+			String href = Consts.siteAddress + Consts.ProductionPath
+					+ (String) attribute;
 			// Check convoy URL
 
 			// Check attack URL

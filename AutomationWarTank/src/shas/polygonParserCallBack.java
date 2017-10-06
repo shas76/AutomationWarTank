@@ -7,10 +7,10 @@ import javax.swing.text.html.HTML.Tag;
 class polygonParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 
-	public polygonParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.buildingsTab;
+	public polygonParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress
+				+ Consts.buildingsTab;
 	}
 
 	@Override
@@ -19,7 +19,7 @@ class polygonParserCallBack extends goToURLFinderParserCallBack {
 			return;
 		if (tag == Tag.A) {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
-			String href = AutomationWarTank.siteAddress + "/"
+			String href = Consts.siteAddress + "/"
 					+ (String) attribute;
 
 			if (href.contains("-0-") && !href.contains("upgradeLink")) {

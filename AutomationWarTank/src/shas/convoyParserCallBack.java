@@ -7,10 +7,10 @@ import javax.swing.text.html.HTML.Tag;
 class convoyParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 
-	public convoyParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.battleTab;
+	public convoyParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress
+				+ Consts.battleTab;
 	}
 
 	@Override
@@ -21,7 +21,7 @@ class convoyParserCallBack extends goToURLFinderParserCallBack {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
 			if (attribute != null) {
-				String href = AutomationWarTank.siteAddress + "/"
+				String href = Consts.siteAddress + "/"
 						+ (String) attribute;
 				// Check attack URL
 				if (href.contains("findEnemy") || href.contains("startFight")

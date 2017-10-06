@@ -7,10 +7,10 @@ import javax.swing.text.html.HTML.Tag;
 class bankParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 
-	public bankParserCallBack() {
-		super();
-		defaultGoToURL = AutomationWarTank.siteAddress
-				+ AutomationWarTank.buildingsTab;
+	public bankParserCallBack(String currentURL) {
+		super(currentURL);
+		defaultGoToURL = Consts.siteAddress
+				+ Consts.buildingsTab;
 	}
 
 	@Override
@@ -19,8 +19,8 @@ class bankParserCallBack extends goToURLFinderParserCallBack {
 			return;
 		if (tag == Tag.A) {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
-			String href = AutomationWarTank.siteAddress
-					+ AutomationWarTank.ProductionPath + (String) attribute;
+			String href = Consts.siteAddress
+					+ Consts.ProductionPath + (String) attribute;
 
 			if (href.contains(AutomationWarTank.bankProduction)
 					&& !href.contains("upgradeLink")) {
