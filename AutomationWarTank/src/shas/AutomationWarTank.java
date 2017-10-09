@@ -295,7 +295,7 @@ public class AutomationWarTank {
 	private static void executeHttpPostAndParse(String URL,
 			List<NameValuePair> requestParams) throws Exception {
 		if (executeHttpPost(URL, requestParams) == Consts.request_redirected_302) {
-			executeHttpPostAndParse(goToURL, requestParams);
+			executeHttpPostAndParse(Consts.siteAddress+"/"+goToURL, requestParams);
 		} else {
 			parseHTML(getParserByURL(goToURL));
 		}
