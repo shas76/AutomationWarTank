@@ -7,7 +7,8 @@ public class figterWorker extends AbstractWorker {
 
 	private Date battleTime =null;
 
-	private Date getNextButtle
+	private Date getNextButtle;
+	
 	@Override
 	public void doWork() throws ParseException  {
 		AutomationWarTank.Logging("Check WarTime.", this);
