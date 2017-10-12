@@ -1,10 +1,14 @@
-package shas;
+package parsers;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class battleParserCallBack extends goToURLFinderParserCallBack {
+import shas.AutomationWarTank;
+import shas.Consts;
+import shas.GlobalVars;
+
+public class battleParserCallBack extends goToURLFinderParserCallBack {
 	private int fuel;
 	private boolean isFuel = false;
 	private String tagBody;
@@ -13,8 +17,7 @@ class battleParserCallBack extends goToURLFinderParserCallBack {
 
 	public battleParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress
-				+ Consts.angarTab;
+		defaultGoToURL = Consts.siteAddress + Consts.angarTab;
 	}
 
 	@Override
@@ -48,13 +51,13 @@ class battleParserCallBack extends goToURLFinderParserCallBack {
 						|| href.contains("-lastOpponentPanel-")) {
 					URL = href;
 					noMoreCalculte = true;
-					AutomationWarTank.Logging("Attack!!!");
+					GlobalVars.logger.Logging("Attack!!!");
 				}
 
 				if (href.contains("showOtherOpps")) {
 					URL = href;
 					noMoreCalculte = true;
-					AutomationWarTank.Logging("New opponents");
+					GlobalVars.logger.Logging("New opponents");
 				}
 			}
 		}
@@ -75,7 +78,7 @@ class battleParserCallBack extends goToURLFinderParserCallBack {
 			if (isFuel) {
 				fuel = Integer.parseInt(tagBody);
 				isFuel = false;
-				AutomationWarTank.Logging("Fuel:" + fuel);
+				GlobalVars.logger.Logging("Fuel:" + fuel);
 			}
 		}
 	}

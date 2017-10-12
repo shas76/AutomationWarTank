@@ -3,7 +3,7 @@
         <!-- -0- Cumulative shell , -1- Armor-piercing shell , -2- High-explosive shell ,-3- Med Pack  -->
 	<ShellsProduction>-1-,-1-,-2-,-1-,-0-,-3-,-2-,-1-,-0-,-2-,-1-</ShellsProduction>
         <!-- -0- Iron, -1- Lead, -2- Ore,-3- Steel -->
-        <MineProduction>-2-</MineProduction>
+        <MineProduction>-0-</MineProduction>
 	<!-- 	<MineProduction>-1-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-</MineProduction>-->
 	<BattleTime>08:00,10:00,11:20,12:00,12:30,14:00,16:00,16:30,17:20,18:00,20:00,22:20,22:30,23:00</BattleTime>
 	<BattleURL>/pve,/pve,/cw,/pve,/dm,/pve,/pve,/dm,/cw,/pve,/pve,/cw,/dm,/pve</BattleURL>       

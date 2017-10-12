@@ -1,14 +1,16 @@
-package shas;
+package parsers;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class loginPageParserCallBack extends goToURLFinderParserCallBack {
+import shas.Consts;
 
-	loginPageParserCallBack(String currentURL) {
+public class loginPageParserCallBack extends goToURLFinderParserCallBack {
+
+	public loginPageParserCallBack(String currentURL) {
 		super(currentURL);
-    }
+	}
 
 	@Override
 	public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
@@ -21,7 +23,7 @@ class loginPageParserCallBack extends goToURLFinderParserCallBack {
 				Method = (String) attributes.getAttribute(Attribute.METHOD);
 			}
 			;
-        }
+		}
 		if (tag == Tag.A) {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
@@ -31,8 +33,8 @@ class loginPageParserCallBack extends goToURLFinderParserCallBack {
 				if (href.contains(Consts.SHOW_SIGNIN_LINK)) {
 					URL = href;
 					timeOut = 0;
-      }
-    }
+				}
+			}
 		}
-  }
+	}
 }

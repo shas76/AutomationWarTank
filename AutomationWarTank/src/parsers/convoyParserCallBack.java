@@ -1,16 +1,19 @@
-package shas;
+package parsers;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class convoyParserCallBack extends goToURLFinderParserCallBack {
+import shas.AutomationWarTank;
+import shas.Consts;
+import shas.GlobalVars;
+
+public class convoyParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 
 	public convoyParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress
-				+ Consts.battleTab;
+		defaultGoToURL = Consts.siteAddress + Consts.battleTab;
 	}
 
 	@Override
@@ -21,8 +24,7 @@ class convoyParserCallBack extends goToURLFinderParserCallBack {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
 
 			if (attribute != null) {
-				String href = Consts.siteAddress + "/"
-						+ (String) attribute;
+				String href = Consts.siteAddress + "/" + (String) attribute;
 				// Check attack URL
 				if (href.contains("findEnemy") || href.contains("startFight")
 						|| href.contains("attackRegular")
@@ -30,7 +32,7 @@ class convoyParserCallBack extends goToURLFinderParserCallBack {
 					URL = (String) href;
 					timeOut = 1000;
 					noMoreCalculte = true;
-					AutomationWarTank.Logging("Attack Convoy!!!");
+					GlobalVars.logger.Logging("Attack Convoy!!!");
 				}
 			}
 		}

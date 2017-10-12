@@ -1,4 +1,4 @@
-package shas;
+package rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -8,7 +8,7 @@ public class StopListener extends UnicastRemoteObject implements StopInterface {
 	private boolean stop = false;
 	private boolean needReloadConfig = false;
 
-	protected StopListener() throws RemoteException {
+	public StopListener() throws RemoteException {
 		super();
 	}
 

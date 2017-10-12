@@ -1,15 +1,17 @@
-package shas;
+package parsers;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 
-class goToURLFinderParserCallBack extends ParserCallback {
-  protected String URL;
-  protected String Method;
-  protected String defaultGoToURL;
-  protected String defaultGoToMethod;
-  protected long timeOut;
+import shas.Consts;
+
+public class goToURLFinderParserCallBack extends ParserCallback {
+	protected String URL;
+	protected String Method;
+	protected String defaultGoToURL;
+	protected String defaultGoToMethod;
+	protected long timeOut;
 	protected String currentURL;
-  
+
 	goToURLFinderParserCallBack(String currentURL) {
 		super();
 		defaultGoToURL = "";
@@ -18,27 +20,27 @@ class goToURLFinderParserCallBack extends ParserCallback {
 		Method = "";
 		timeOut = 1000;
 		this.currentURL = currentURL;
-  }
-  
+	}
+
 	public long getTimeOut() {
 		return timeOut;
-  }
-  
+	}
+
 	public String getURL() {
 		return URL;
-  }
-  
+	}
+
 	public String getMethod() {
 		return Method;
-  }
-  
+	}
+
 	public void afterParse() {
 		if (URL.equals("")) {
 			URL = defaultGoToURL;
 
-    }
+		}
 		if (Method.equals("")) {
 			Method = defaultGoToMethod;
-    }
-  }
+		}
+	}
 }

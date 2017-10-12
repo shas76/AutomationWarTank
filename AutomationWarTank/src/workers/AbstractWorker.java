@@ -1,4 +1,4 @@
-package shas;
+package workers;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +23,20 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import parsers.angarParserCallBack;
+import parsers.armoryParserCallBack;
+import parsers.bankParserCallBack;
+import parsers.battleParserCallBack;
+import parsers.buildingsParserCallBack;
+import parsers.convoyParserCallBack;
+import parsers.fightParserCallBack;
+import parsers.goToURLFinderParserCallBack;
+import parsers.loginPageParserCallBack;
+import parsers.mineParserCallBack;
+import parsers.polygonParserCallBack;
+import shas.Consts;
+import shas.GlobalVars;
+
 public abstract class AbstractWorker implements Runnable {
 
 	private HttpClient httpclient;
@@ -35,20 +49,20 @@ public abstract class AbstractWorker implements Runnable {
 	private goToURLFinderParserCallBack parseHTML(
 			goToURLFinderParserCallBack parser) throws IOException {
 		if (parser == null) {
-			AutomationWarTank.Logging("Parser is NULL: ", this);
+			GlobalVars.logger.Logging("Parser is NULL: ", this);
 			goToURL = "";
 			method = "GET";
 			timeOut = 0;
 			return null;
 		}
-		AutomationWarTank.Logging("Parse using: " + parser.toString(), this);
+		GlobalVars.logger.Logging("Parse using: " + parser.toString(), this);
 		ParserDelegator parserDelegator = new ParserDelegator();
 		parserDelegator.parse(new StringReader(responseBody), parser, true);
 		parser.afterParse();
 		goToURL = parser.getURL();
 		method = parser.getMethod();
 		timeOut = parser.getTimeOut();
-		AutomationWarTank.Logging("goToURL=" + goToURL + "   method=" + method,
+		GlobalVars.logger.Logging("goToURL=" + goToURL + "   method=" + method,
 				this);
 		return parser;
 	}
@@ -76,21 +90,21 @@ public abstract class AbstractWorker implements Runnable {
 		}
 		EntityUtils.consume(entity);
 		responseBody = sw.toString();
-		AutomationWarTank.Logging(siteResponse.toString(), this);
-		if (AutomationWarTank.enableBodyLogging == 1) {
-			AutomationWarTank.Logging(sw.toString(), this);
+		GlobalVars.logger.Logging(siteResponse.toString());
+		if (GlobalVars.config.getEnableBodyLogging() == 1) {
+			GlobalVars.logger.Logging(sw.toString());
 		}
 	}
 
 	private int executeHttpGet(String URL) throws Exception {
-		AutomationWarTank.Logging("Get Response from:" + URL, this);
+		GlobalVars.logger.Logging("Get Response from:" + URL, this);
 		if (("".equals(URL)) || (URL == null)) {
 			throw new Exception("Empty URL !!!");
 		}
 		HttpResponse response = httpclient.execute(new HttpGet(URL));
 		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
 			goToURL = getHeaderItem(response.getAllHeaders(),
-					Consts.LocationHeader);
+					Consts.LOCATION_HEADER);
 		} else {
 			readContent(response);
 		}
@@ -113,7 +127,7 @@ public abstract class AbstractWorker implements Runnable {
 
 	private int executeHttpPost(String URL, List<NameValuePair> requestParams)
 			throws Exception {
-		AutomationWarTank.Logging("Get Response from:" + URL, this);
+		GlobalVars.logger.Logging("Get Response from:" + URL, this);
 		if (("".equals(URL)) || (URL == null)) {
 			throw new Exception("Empty URL !!!");
 		}
@@ -124,7 +138,7 @@ public abstract class AbstractWorker implements Runnable {
 		HttpResponse response = httpclient.execute(httpPost);
 		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
 			goToURL = getHeaderItem(response.getAllHeaders(),
-					Consts.LocationHeader);
+					Consts.LOCATION_HEADER);
 		} else {
 			readContent(response);
 		}
@@ -147,7 +161,7 @@ public abstract class AbstractWorker implements Runnable {
 	private String getHeaderItem(Header[] headers, String name) {
 		for (Header head : headers) {
 			if (head.getName().equals(name)) {
-				AutomationWarTank.Logging(name + "=" + head.getValue(), this);
+				GlobalVars.logger.Logging(name + "=" + head.getValue(), this);
 				return head.getValue();
 			}
 		}
@@ -181,7 +195,7 @@ public abstract class AbstractWorker implements Runnable {
 	}
 
 	protected boolean isURLBattle(String URL) {
-		for (String battlePath : AutomationWarTank.battleURLs) {
+		for (String battlePath : GlobalVars.config.getBattleURLs()) {
 			if (URL.contains(battlePath)) {
 				return true;
 			}
@@ -202,15 +216,15 @@ public abstract class AbstractWorker implements Runnable {
 				// Login for registered users
 				nameValuePairs.add(new BasicNameValuePair("id1_hf_0", ""));
 				nameValuePairs.add(new BasicNameValuePair("login",
-						AutomationWarTank.userName));
+						GlobalVars.config.getUserName()));
 				nameValuePairs.add(new BasicNameValuePair("password",
-						AutomationWarTank.password));
+						GlobalVars.config.getPassword()));
 				executeHttpPostAndParse(goToURL, nameValuePairs);
 				if (goToURL.equals("")) {
 					goToURL = Consts.siteAddress + Consts.angarTab;
 				}
 				while (true) {
-					AutomationWarTank.Logging("Start next Iteration.", this);
+					GlobalVars.logger.Logging("Start next Iteration.", this);
 					doWork();
 					switch (method) {
 					case Consts.POST_METHOD:
@@ -219,16 +233,16 @@ public abstract class AbstractWorker implements Runnable {
 						executeHttpGetAndParse(goToURL);
 					}
 
-					AutomationWarTank.Logging("Wating "
+					GlobalVars.logger.Logging("Wating "
 							+ (int) (timeOut / 1000) + " seconds.", this);
 					Thread.sleep(timeOut);
 				}
 			} catch (Exception e) {
-				AutomationWarTank.Logging(e, this);
+				GlobalVars.logger.Logging(e, this);
 				try {
 					Thread.sleep(5 * Consts.msInMinunte);
 				} catch (InterruptedException e1) {
-					AutomationWarTank.Logging(e1, this);
+					GlobalVars.logger.Logging(e1, this);
 				}
 			}
 		}

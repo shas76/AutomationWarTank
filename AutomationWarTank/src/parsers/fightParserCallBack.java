@@ -1,4 +1,4 @@
-package shas;
+package parsers;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,7 +13,11 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-class fightParserCallBack extends goToURLFinderParserCallBack {
+import shas.AutomationWarTank;
+import shas.Consts;
+import shas.GlobalVars;
+
+public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private boolean noMoreCalculte = false;
 	private Date timeLeft = null;
 	private int myDurability;
@@ -59,7 +63,7 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 									timeLeft.getTime());
 				}
 				noMoreCalculte = true;
-				AutomationWarTank
+				GlobalVars.logger
 						.Logging("Applay Button 'Platoon, lets roll! Attack!' !!!");
 			}
 			if (href.contains(Consts.REFRESH)) {
@@ -72,7 +76,7 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 				}
 
 				noMoreCalculte = true;
-				AutomationWarTank.Logging(Consts.REFRESH);
+				GlobalVars.logger.Logging(Consts.REFRESH);
 
 			}
 			if (href.contains("attackRegularShellLink")) {
@@ -129,11 +133,11 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 		if (bodyText.contains("starts in")) {
 			String[] wordsInBody = bodyText.split(" ");
 			try {
-				AutomationWarTank
+				GlobalVars.logger
 						.Logging("Time Left on Page:" + wordsInBody[2]);
 				timeLeft = new SimpleDateFormat("HH:mm:ss")
 						.parse(wordsInBody[2]);
-				AutomationWarTank.Logging("Time Left:"
+				GlobalVars.logger.Logging("Time Left:"
 						+ String.valueOf(timeLeft.getTime()));
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -146,7 +150,7 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 				} catch (NumberFormatException e) {
 					enemyDurability = 1000;
 				}
-				AutomationWarTank
+				GlobalVars.logger
 						.Logging("Enemy Durability:" + enemyDurability);
 			}
 			if (calculatingParameter == 0) {
@@ -156,12 +160,12 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 				} catch (NumberFormatException e) {
 					myDurability = 1000;
 				}
-				AutomationWarTank.Logging("My Durability:" + myDurability);
+				GlobalVars.logger.Logging("My Durability:" + myDurability);
 			}
 		}
 		if (tableColumnsNumber[1] == 2 && enemyName == null) {
 			enemyName = bodyText;
-			AutomationWarTank.Logging("EnemyName:" + enemyName);
+			GlobalVars.logger.Logging("EnemyName:" + enemyName);
 		}
 
 		if (inRepairLink) {
@@ -178,7 +182,7 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 			} catch (NumberFormatException e) {
 				countSpecialShells = 0;
 			}
-			AutomationWarTank.Logging("Count Special Shells:"
+			GlobalVars.logger.Logging("Count Special Shells:"
 					+ countSpecialShells);
 		}
 	}
@@ -205,28 +209,29 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 
 		if (URL.equals("")) {
 			if (repairLinkBody.contains("Repair kit")
-					&& myDurability < AutomationWarTank.maxDurability4UsingRepaer) {
+					&& myDurability < GlobalVars.config
+							.getMaxDurability4UsingRepaer()) {
 				URL = repairLink;
 				timeOut = 0;
 				GlobalVars.skipWaiting = true;
-				AutomationWarTank.Logging("Use Repair!");
+				GlobalVars.logger.Logging("Use Repair!");
 			} else {
 				if (maneverLinkBody.contains("Maneuver")) {
 					URL = maneuverLink;
 					timeOut = 0;
 					GlobalVars.skipWaiting = true;
-					AutomationWarTank.Logging("Maneuver!");
+					GlobalVars.logger.Logging("Maneuver!");
 				} else {
 					boolean allied = false;
 					boolean isAlliedException = false;
-					if (AutomationWarTank.alliedExceptions.contains(enemyName
-							.toLowerCase())) {
+					if (GlobalVars.config.getAlliedExceptions().contains(
+							enemyName.toLowerCase())) {
 						isAlliedException = true;
 						fighterLog.write("\r\n" + "Allied Exception:"
 								+ enemyName + "\r\n");
 					}
 					if (!isAlliedException) {
-						for (String alliance : AutomationWarTank.allied) {
+						for (String alliance : GlobalVars.config.getAllied()) {
 							if (enemyName.toLowerCase().contains(alliance)) {
 								allied = true;
 								break;
@@ -234,7 +239,8 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 						}
 					}
 					if (allied) {
-						if (AutomationWarTank.countSkippedPlayers == AutomationWarTank.limitChangeTarget) {
+						if (AutomationWarTank.countSkippedPlayers == GlobalVars.config
+								.getLimitChangeTarget()) {
 							URL = maneuverLink;
 							fighterLog
 									.write("\r\ncountSkippedPlayers == limitChangeTarget. Friend= "
@@ -251,14 +257,14 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 									+ "\r\n");
 
 							AutomationWarTank.countSkippedPlayers++;
-							AutomationWarTank.Logging("Skip our friend! "
+							GlobalVars.logger.Logging("Skip our friend! "
 									+ enemyName);
-							AutomationWarTank.Logging("CountSkippedPlayers: "
+							GlobalVars.logger.Logging("CountSkippedPlayers: "
 									+ AutomationWarTank.countSkippedPlayers);
 						}
 					} else {
 						AutomationWarTank.countSkippedPlayers = 0;
-						AutomationWarTank.Logging("CountSkippedPlayers: "
+						GlobalVars.logger.Logging("CountSkippedPlayers: "
 								+ AutomationWarTank.countSkippedPlayers);
 						if (enemyDurability > 800
 								&& !currentURL.contains(Consts.dmTab)) {
@@ -266,9 +272,12 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 							timeOut = 500;
 						} else {
 							if (!attackSpecialShellLink.equals("")
-									&& countSpecialShells > AutomationWarTank.limitUsingSpecialShell
-									&& enemyDurability > AutomationWarTank.enemyDurabilityLimitUsingSpecialShell
-									&& (currentURL.contains(Consts.dmTab) || (countSpecialShells > AutomationWarTank.limitUsingSpecialShell + 100))) {
+									&& countSpecialShells > GlobalVars.config
+											.getLimitUsingSpecialShell()
+									&& enemyDurability > GlobalVars.config
+											.getLimitUsingSpecialShell()
+									&& (currentURL.contains(Consts.dmTab) || (countSpecialShells > GlobalVars.config
+											.getLimitUsingSpecialShell() + 100))) {
 								URL = attackSpecialShellLink;
 								if (GlobalVars.skipWaiting) {
 									timeOut = 0;
@@ -284,7 +293,8 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 										timeOut = 0;
 										GlobalVars.skipWaiting = false;
 									} else {
-										if (enemyDurability < AutomationWarTank.enemyDurabilityLimitUsingShortTimeReload
+										if (enemyDurability < GlobalVars.config
+												.getEnemyDurabilityLimitUsingShortTimeReload()
 												&& enemyDurability > 0) {
 											timeOut = 4000;
 										}
@@ -300,11 +310,11 @@ class fightParserCallBack extends goToURLFinderParserCallBack {
 		PrintStream printStream;
 		try {
 			printStream = new PrintStream(new FileOutputStream(
-					AutomationWarTank.fighterLogFileName, true));
+					GlobalVars.config.getFighterLogFileName(), true));
 			printStream.print(fighterLog.toString());
 			printStream.close();
 		} catch (FileNotFoundException e) {
-			AutomationWarTank.Logging(e);
+			GlobalVars.logger.Logging(e);
 		}
 		if (Math.abs(timeOut) > 5 * Consts.msInMinunte) {
 			timeOut = 10000;

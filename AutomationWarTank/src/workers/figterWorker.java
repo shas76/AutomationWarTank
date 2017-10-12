@@ -1,7 +1,11 @@
-package shas;
+package workers;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import shas.AutomationWarTank;
+import shas.Consts;
+import shas.GlobalVars;
 
 public class figterWorker extends AbstractWorker {
 
@@ -11,19 +15,19 @@ public class figterWorker extends AbstractWorker {
 	
 	@Override
 	public void doWork() throws ParseException  {
-		AutomationWarTank.Logging("Check WarTime.", this);
+		GlobalVars.logger.Logging("Check WarTime.", this);
 		Date currentTime = AutomationWarTank.extractTime(new Date());
 		boolean TimeForWar = false;
 		String battleUrl = "";
 		// Check Battle
 		int index = 0;
-		for (Date time : AutomationWarTank.battleTimes) {
+		for (Date time : GlobalVars.config.getBattleTimes()) {
 			if (time.getTime() > currentTime.getTime()
 					&& (time.getTime() - currentTime.getTime() < 6 * Consts.msInMinunte)) {
-				battleUrl = Consts.siteAddress + AutomationWarTank.battleURLs[index];
+				battleUrl = Consts.siteAddress + GlobalVars.config.getBattleURLs()[index];
 				TimeForWar = true;
 				battleTime = time;
-				AutomationWarTank.Logging("Goto battle!!! URL" + AutomationWarTank.battleURLs[index], this);
+				GlobalVars.logger.Logging("Goto battle!!! URL" + GlobalVars.config.getBattleURLs()[index], this);
 				break;
 			}
 			index++;
