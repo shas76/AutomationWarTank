@@ -21,6 +21,7 @@ public final class Config {
 	private int randomInterval = 2;
 	private Date[] battleTimes;
 	private String[] battleURLs;
+	private String[] generalProcessingURLs;
 	private int limitUsingSpecialShell;
 	private int enemyDurabilityLimitUsingSpecialShell;
 	private String bankProduction;
@@ -76,6 +77,7 @@ public final class Config {
 		}
 		Date[] tempBattleTime = listOfTimes.toArray(new Date[0]);
 		String[] tempBattleURL = configRead.getStringArray("BattleURL");
+		String[] tempGeneralProcessingURLs = configRead.getStringArray("GeneralProcessingURLs");
 		String tempFighterLogFileName = configRead.getString(
 				"FighterLogFileName", "d:\\reset.txt");
 		String[] tempAllied = configRead.getStringArray("Allied");
@@ -96,6 +98,7 @@ public final class Config {
 		randomInterval = tempRandomInterval;
 		battleTimes = tempBattleTime;
 		battleURLs = tempBattleURL;
+		generalProcessingURLs = tempGeneralProcessingURLs;
 		limitUsingSpecialShell = tempLimitUsingSpecialShell;
 		enemyDurabilityLimitUsingSpecialShell = tempEnemyDurabilityLimitUsingSpecialShall;
 		bankProduction = tempBankProduction;
@@ -128,6 +131,7 @@ public final class Config {
 				+ maxDurability4UsingRepaer);
 		GlobalVars.logger.Logging("battleTime:" + outArray(battleTimes));
 		GlobalVars.logger.Logging("battleURL:" + outArray(battleURLs));
+		GlobalVars.logger.Logging("GeneralProcessingURLs:" + outArray(generalProcessingURLs));
 		GlobalVars.logger.Logging("FighterLogFileName:" + fighterLogFileName);
 		GlobalVars.logger.Logging("Allied:" + outArray(allied) + "|");
 		GlobalVars.logger.Logging("LimitChangeTarget:" + limitChangeTarget);
@@ -219,5 +223,9 @@ public final class Config {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public String[] getGeneralProcessingURLs() {
+		return generalProcessingURLs;
 	}
 }

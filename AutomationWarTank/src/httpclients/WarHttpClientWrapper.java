@@ -15,10 +15,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
@@ -146,41 +142,5 @@ public class WarHttpClientWrapper {
 		return parser;
 	}
 	
-	private HttpResponse executeHttpRequest(String URL, String method,
-			List<NameValuePair> requestParams) throws Exception {
-		GlobalVars.logger.Logging("Get Response from:" + URL);
-		if ("".equals(URL) || URL == null)
-			throw new Exception("Empty URL !!!");
-		HttpRequestBase httpRequest = null;
-		if (Consts.GET_METHOD.equals(method.toUpperCase())) {
-			httpRequest = new HttpGet(URL);
-		} else {
-			if (Consts.POST_METHOD.equals(method.toUpperCase())) {
-				httpRequest = new HttpPost(URL);
-				if (requestParams != null) {
-					((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(
-							requestParams));
-				}
-			}
-		}
-		return httpclient.execute(httpRequest);
-	}
-
-	public void executeHttpRequestAndParse(String URL, String method,
-			List<NameValuePair> requestParams) throws Exception{
-		HttpResponse response = executeHttpRequest(URL, method, requestParams);
-		if (response.getStatusLine().getStatusCode()  == Consts.request_redirected_302) {
-			 executeHttpRequestAndParse(Consts.siteAddress + "/" + getHeaderItem(response.getAllHeaders(), "Location"),method,
-					requestParams);
-		} else {
-			readContent(response);
-			parseHTML(getParserByURL(URL));
-		}
-		
-	}
-	
-	public void executeHttpRequestAndParse(String URL, String method) throws Exception {
-		executeHttpRequestAndParse(URL, method, null);
-	}
 
 }

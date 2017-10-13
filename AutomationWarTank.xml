@@ -6,7 +6,8 @@
         <MineProduction>-0-</MineProduction>
 	<!-- 	<MineProduction>-1-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-</MineProduction>-->
 	<BattleTime>08:00,10:00,11:20,12:00,12:30,14:00,16:00,16:30,17:20,18:00,20:00,22:20,22:30,23:00</BattleTime>
-	<BattleURL>/pve,/pve,/cw,/pve,/dm,/pve,/pve,/dm,/cw,/pve,/pve,/cw,/dm,/pve</BattleURL>       
+	<BattleURL>/pve,/pve,/cw,/pve,/dm,/pve,/pve,/dm,/cw,/pve,/pve,/cw,/dm,/pve</BattleURL> 
+        <GeneralProcessingURLs>/polygon,/battle,/buildings,/convoy,/production/Mine,/production/Armory,/production/Bank,/angar</GeneralProcessingURLs>      
 	<SleepingInterval>1</SleepingInterval>
 	<RandomInterval>1</RandomInterval>
 	<LimitUsingSpecialShell>500</LimitUsingSpecialShell>

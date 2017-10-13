@@ -23,7 +23,8 @@ public final class Consts {
 	public static final String cwTab = "/cw";
 	public static final String dmTab = "/dm";
 	public static final String REFRESH = "refresh";
-	public static final int msInMinunte = 60 * 1000;
+	public static final int ONE_SECOND = 1000;
+	public static final int msInMinunte = 60 * ONE_SECOND;
 	public static final String SHOW_SIGNIN_LINK = "-showSigninLink";
 	public static final String LOCATION_HEADER = "Location";
 	public static final List<String> COMMANDS = Arrays.asList("stop","reloadconfig");

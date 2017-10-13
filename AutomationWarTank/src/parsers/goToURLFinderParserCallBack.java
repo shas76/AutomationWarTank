@@ -35,12 +35,12 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	public void afterParse() {
-		if (URL.equals("")) {
+/*		if (URL.equals("")) {
 			URL = defaultGoToURL;
 
 		}
 		if (Method.equals("")) {
 			Method = defaultGoToMethod;
-		}
+		}*/
 	}
 }

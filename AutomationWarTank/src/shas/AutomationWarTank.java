@@ -40,6 +40,7 @@ import rmi.StopInterface;
 import rmi.StopListener;
 import utils.Config;
 import utils.Logger;
+import workers.GeneralProcessingWorker;
 
 public class AutomationWarTank {
 
@@ -130,100 +131,61 @@ public class AutomationWarTank {
 			GlobalVars.logger.Logging(e);
 			return;
 		}
+		new Thread(new GeneralProcessingWorker());
 		GlobalVars.logger.Logging("Programm started.");
 
-		WarHttpClientWrapper warHttpClient = new WarHttpClientWrapper();
-		// Login for registered users
-		warHttpClient.nameValuePairs
-				.add(new BasicNameValuePair("id1_hf_0", ""));
-		warHttpClient.nameValuePairs.add(new BasicNameValuePair("login",
-				GlobalVars.config.getUserName()));
-		warHttpClient.nameValuePairs.add(new BasicNameValuePair("password",
-				GlobalVars.config.getPassword()));
-		while (true) {
-
-			try {
-
-				warHttpClient.executeHttpRequestAndParse(Consts.siteAddress,
-						Consts.GET_METHOD);
-				warHttpClient.executeHttpRequestAndParse(warHttpClient.goToURL,
-						Consts.GET_METHOD);
-
-				warHttpClient.executeHttpRequestAndParse(warHttpClient.goToURL,
-						Consts.POST_METHOD, warHttpClient.nameValuePairs);
-				if (warHttpClient.goToURL.equals("")) {
-					warHttpClient.goToURL = Consts.siteAddress
-							+ Consts.angarTab;
+		try {
+			while (true) {
+				GlobalVars.monitor.wait();
+				if (Consts.COMMANDS.get(0).equals(GlobalVars.monitor)) {
+					break;
 				}
-				Date battleTime = null;
-				while (true) {
-					GlobalVars.logger.Logging("Start next Iteration.");
-					GlobalVars.logger.Logging("Check WarTime.");
-					Date currentTime = AutomationWarTank
-							.extractTime(new Date());
-					boolean TimeForWar = false;
-					String battleUrl = "";
-					// Check Battle
-					int index = 0;
-					for (Date time : GlobalVars.config.getBattleTimes()) {
-						if (time.getTime() > currentTime.getTime()
-								&& (time.getTime() - currentTime.getTime() < 6 * Consts.msInMinunte)) {
-							battleUrl = Consts.siteAddress
-									+ GlobalVars.config.getBattleURLs()[index];
-							TimeForWar = true;
-							battleTime = time;
-							GlobalVars.logger.Logging("Goto battle!!! URL"
-									+ GlobalVars.config.getBattleURLs()[index]);
-							break;
-						}
-						index++;
-					}
-					// TO DO check URL contains IN ARRAY
-					if (TimeForWar) {
-						if (!warHttpClient.isURLBattle(warHttpClient.goToURL)) {
-							countSkippedPlayers = 0;
-							warHttpClient.goToURL = battleUrl;
-						}
-					} else {
-						if (battleTime != null) {
-							if (warHttpClient
-									.isURLBattle(warHttpClient.goToURL)
-									&& (currentTime.getTime() - battleTime
-											.getTime()) > 2 * Consts.msInMinunte
-									&& warHttpClient.goToURL
-											.contains(Consts.REFRESH)) {
-								warHttpClient.goToURL = Consts.siteAddress
-										+ Consts.angarTab;
-								battleTime = null;
-							}
-						}
-					}
-					warHttpClient.executeHttpRequestAndParse(
-							warHttpClient.goToURL, warHttpClient.method);
-					if (rmiServer.isStop()) {
-						recivedStopSignal = true;
-						break;
-					}
-					if (rmiServer.isNeedReloadConfig()) {
-						GlobalVars.config.loadingConfiguration();
-						rmiServer.setNeedReloadConfig(false);
-					}
-					GlobalVars.logger.Logging("Wating "
-							+ (int) (warHttpClient.timeOut / 1000)
-							+ " seconds.");
-					Thread.sleep(warHttpClient.timeOut);
-				}
-			} catch (Exception e) {
-				GlobalVars.logger.Logging(e);
-				try {
-					Thread.sleep(5 * Consts.msInMinunte);
-				} catch (InterruptedException e1) {
-					GlobalVars.logger.Logging(e1);
+				if (Consts.COMMANDS.get(1).equals(GlobalVars.monitor)) {
+					GlobalVars.monitor = "";
+					GlobalVars.config.loadingConfiguration();
 				}
 			}
-			if (recivedStopSignal)
-				break;
+
+		} catch (InterruptedException | ConfigurationException | ParseException e) {
+			GlobalVars.logger.Logging(e);
 		}
+
+		/*
+		 * try {
+		 * 
+		 * if (warHttpClient.goToURL.equals("")) { warHttpClient.goToURL =
+		 * Consts.siteAddress + Consts.angarTab; } Date battleTime = null; while
+		 * (true) { GlobalVars.logger.Logging("Start next Iteration.");
+		 * GlobalVars.logger.Logging("Check WarTime."); Date currentTime =
+		 * AutomationWarTank .extractTime(new Date()); boolean TimeForWar =
+		 * false; String battleUrl = ""; // Check Battle int index = 0; for
+		 * (Date time : GlobalVars.config.getBattleTimes()) { if (time.getTime()
+		 * > currentTime.getTime() && (time.getTime() - currentTime.getTime() <
+		 * 6 * Consts.msInMinunte)) { battleUrl = Consts.siteAddress +
+		 * GlobalVars.config.getBattleURLs()[index]; TimeForWar = true;
+		 * battleTime = time; GlobalVars.logger.Logging("Goto battle!!! URL" +
+		 * GlobalVars.config.getBattleURLs()[index]); break; } index++; } // TO
+		 * DO check URL contains IN ARRAY if (TimeForWar) { if
+		 * (!warHttpClient.isURLBattle(warHttpClient.goToURL)) {
+		 * countSkippedPlayers = 0; warHttpClient.goToURL = battleUrl; } } else
+		 * { if (battleTime != null) { if (warHttpClient
+		 * .isURLBattle(warHttpClient.goToURL) && (currentTime.getTime() -
+		 * battleTime .getTime()) > 2 * Consts.msInMinunte &&
+		 * warHttpClient.goToURL .contains(Consts.REFRESH)) {
+		 * warHttpClient.goToURL = Consts.siteAddress + Consts.angarTab;
+		 * battleTime = null; } } }
+		 * 
+		 * if (rmiServer.isStop()) { recivedStopSignal = true; break; } if
+		 * (rmiServer.isNeedReloadConfig()) {
+		 * GlobalVars.config.loadingConfiguration();
+		 * rmiServer.setNeedReloadConfig(false); }
+		 * GlobalVars.logger.Logging("Wating " + (int) (warHttpClient.timeOut /
+		 * 1000) + " seconds."); Thread.sleep(warHttpClient.timeOut); } } catch
+		 * (Exception e) { GlobalVars.logger.Logging(e); try { Thread.sleep(5 *
+		 * Consts.msInMinunte); } catch (InterruptedException e1) {
+		 * GlobalVars.logger.Logging(e1); } } if (recivedStopSignal) break;
+		 */
+
 		GlobalVars.logger.Logging("Programm stopped.");
 	}
 }

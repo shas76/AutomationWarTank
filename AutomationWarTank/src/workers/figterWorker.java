@@ -56,4 +56,10 @@ public class figterWorker extends AbstractWorker {
 		battleTime =null;		
 	}
 
+	@Override
+	public void doAfterWork() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

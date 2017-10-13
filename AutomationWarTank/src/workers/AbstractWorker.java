@@ -19,6 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -40,12 +41,22 @@ import shas.GlobalVars;
 public abstract class AbstractWorker implements Runnable {
 
 	private HttpClient httpclient;
+	private List<NameValuePair> nameValuePairs;
+
 	private String method;
 	private long timeOut;
 	private String responseBody;
-	
-	protected String goToURL;
-	
+
+	private String goToURL;
+
+	public String getGoToURL() {
+		return goToURL;
+	}
+
+	public void setGoToURL(String goToURL) {
+		this.goToURL = goToURL;
+	}
+
 	private goToURLFinderParserCallBack parseHTML(
 			goToURLFinderParserCallBack parser) throws IOException {
 		if (parser == null) {
@@ -96,68 +107,6 @@ public abstract class AbstractWorker implements Runnable {
 		}
 	}
 
-	private int executeHttpGet(String URL) throws Exception {
-		GlobalVars.logger.Logging("Get Response from:" + URL, this);
-		if (("".equals(URL)) || (URL == null)) {
-			throw new Exception("Empty URL !!!");
-		}
-		HttpResponse response = httpclient.execute(new HttpGet(URL));
-		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
-			goToURL = getHeaderItem(response.getAllHeaders(),
-					Consts.LOCATION_HEADER);
-		} else {
-			readContent(response);
-		}
-		return response.getStatusLine().getStatusCode();
-	}
-
-	private void executeHttpGetAndParse(String URL) throws Exception {
-
-		if (executeHttpGet(URL) == Consts.request_redirected_302) {
-			executeHttpGetAndParse(goToURL);
-		} else {
-			parseHTML(getParserByURL(URL));
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private int executeHttpPost(String URL) throws Exception {
-		return executeHttpPost(URL, null);
-	}
-
-	private int executeHttpPost(String URL, List<NameValuePair> requestParams)
-			throws Exception {
-		GlobalVars.logger.Logging("Get Response from:" + URL, this);
-		if (("".equals(URL)) || (URL == null)) {
-			throw new Exception("Empty URL !!!");
-		}
-		HttpPost httpPost = new HttpPost(URL);
-		if (requestParams != null) {
-			httpPost.setEntity(new UrlEncodedFormEntity(requestParams));
-		}
-		HttpResponse response = httpclient.execute(httpPost);
-		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
-			goToURL = getHeaderItem(response.getAllHeaders(),
-					Consts.LOCATION_HEADER);
-		} else {
-			readContent(response);
-		}
-		return response.getStatusLine().getStatusCode();
-	}
-
-	private void executeHttpPostAndParse(String URL) throws Exception {
-		executeHttpPostAndParse(URL, null);
-	}
-
-	private void executeHttpPostAndParse(String URL,
-			List<NameValuePair> requestParams) throws Exception {
-		if (executeHttpPost(URL, requestParams) == Consts.request_redirected_302) {
-			executeHttpPostAndParse(goToURL, requestParams);
-		} else {
-			parseHTML(getParserByURL(goToURL));
-		}
-	}
-
 	private String getHeaderItem(Header[] headers, String name) {
 		for (Header head : headers) {
 			if (head.getName().equals(name)) {
@@ -194,6 +143,48 @@ public abstract class AbstractWorker implements Runnable {
 		return null;
 	}
 
+	private HttpResponse executeHttpRequest(String URL, String method,
+			List<NameValuePair> requestParams) throws Exception {
+		GlobalVars.logger.Logging("Get Response from:" + URL);
+		if ("".equals(URL) || URL == null)
+			throw new Exception("Empty URL !!!");
+		HttpRequestBase httpRequest = null;
+		if (Consts.GET_METHOD.equals(method.toUpperCase())) {
+			httpRequest = new HttpGet(URL);
+		} else {
+			if (Consts.POST_METHOD.equals(method.toUpperCase())) {
+				httpRequest = new HttpPost(URL);
+				if (requestParams != null) {
+					((HttpPost) httpRequest)
+							.setEntity(new UrlEncodedFormEntity(requestParams));
+				}
+			}
+		}
+		return httpclient.execute(httpRequest);
+	}
+
+	private void executeHttpRequestAndParse(String URL, String method,
+			List<NameValuePair> requestParams) throws Exception {
+		HttpResponse response = executeHttpRequest(URL, method, requestParams);
+		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
+			executeHttpRequestAndParse(
+					Consts.siteAddress
+							+ "/"
+							+ getHeaderItem(response.getAllHeaders(),
+									Consts.LOCATION_HEADER), method,
+					requestParams);
+		} else {
+			readContent(response);
+			parseHTML(getParserByURL(URL));
+		}
+
+	}
+
+	private void executeHttpRequestAndParse(String URL, String method)
+			throws Exception {
+		executeHttpRequestAndParse(URL, method, null);
+	}
+
 	protected boolean isURLBattle(String URL) {
 		for (String battlePath : GlobalVars.config.getBattleURLs()) {
 			if (URL.contains(battlePath)) {
@@ -203,52 +194,60 @@ public abstract class AbstractWorker implements Runnable {
 		return false;
 	}
 
+	protected void init() throws Exception {
+		httpclient = HttpClients.createDefault();
+		nameValuePairs = new ArrayList<NameValuePair>();
+		// Login for registered users
+		nameValuePairs.add(new BasicNameValuePair("id1_hf_0", ""));
+		nameValuePairs.add(new BasicNameValuePair("login", GlobalVars.config
+				.getUserName()));
+		nameValuePairs.add(new BasicNameValuePair("password", GlobalVars.config
+				.getPassword()));
+
+		executeHttpRequestAndParse(Consts.siteAddress, Consts.GET_METHOD);
+		executeHttpRequestAndParse(goToURL, Consts.GET_METHOD);
+		// login
+		executeHttpRequestAndParse(goToURL, Consts.POST_METHOD, nameValuePairs);
+		if (goToURL.equals("")) {
+			goToURL = Consts.siteAddress + Consts.angarTab;
+		}
+
+	}
+
 	@Override
 	public void run() {
 		while (true) {
-			httpclient = HttpClients.createDefault();
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
 			try {
-
-				executeHttpGetAndParse(Consts.siteAddress);
-				executeHttpGetAndParse(goToURL);
-				// Login for registered users
-				nameValuePairs.add(new BasicNameValuePair("id1_hf_0", ""));
-				nameValuePairs.add(new BasicNameValuePair("login",
-						GlobalVars.config.getUserName()));
-				nameValuePairs.add(new BasicNameValuePair("password",
-						GlobalVars.config.getPassword()));
-				executeHttpPostAndParse(goToURL, nameValuePairs);
-				if (goToURL.equals("")) {
-					goToURL = Consts.siteAddress + Consts.angarTab;
-				}
+				init();
 				while (true) {
 					GlobalVars.logger.Logging("Start next Iteration.", this);
 					doWork();
-					switch (method) {
-					case Consts.POST_METHOD:
-						executeHttpPostAndParse(goToURL);
-					case Consts.GET_METHOD:
-						executeHttpGetAndParse(goToURL);
-					}
-
-					GlobalVars.logger.Logging("Wating "
-							+ (int) (timeOut / 1000) + " seconds.", this);
-					Thread.sleep(timeOut);
+					GlobalVars.logger.Logging("The Iteration was ended.", this);
+					doAfterWork();
 				}
 			} catch (Exception e) {
 				GlobalVars.logger.Logging(e, this);
-				try {
-					Thread.sleep(5 * Consts.msInMinunte);
-				} catch (InterruptedException e1) {
-					GlobalVars.logger.Logging(e1, this);
-				}
+				threadPause(5 * Consts.msInMinunte);
 			}
 		}
 	}
 
-	public abstract void doWork() throws ParseException;
-	public abstract void doBeforeWhile() ;
+	
+	public void doWork() throws Exception {
+		executeHttpRequestAndParse(goToURL, method);
+	};
+
+	public abstract void doAfterWork();
+	
+//	public abstract void doBeforeWhile();
+	
+	public void threadPause(long sleepInterval){
+		try {
+			Thread.sleep(sleepInterval);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
