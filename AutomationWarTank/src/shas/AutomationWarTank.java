@@ -132,18 +132,18 @@ public class AutomationWarTank {
 		}
 		GlobalVars.logger.Logging("Programm started.");
 
-		WarHttpClientWrapper warHttpClient = new WarHttpClientWrapper();
-		// Login for registered users
-		warHttpClient.nameValuePairs
-				.add(new BasicNameValuePair("id1_hf_0", ""));
-		warHttpClient.nameValuePairs.add(new BasicNameValuePair("login",
-				GlobalVars.config.getUserName()));
-		warHttpClient.nameValuePairs.add(new BasicNameValuePair("password",
-				GlobalVars.config.getPassword()));
+
 		while (true) {
 
 			try {
-
+				WarHttpClientWrapper warHttpClient = new WarHttpClientWrapper();
+				// Login for registered users
+				warHttpClient.nameValuePairs
+						.add(new BasicNameValuePair("id1_hf_0", ""));
+				warHttpClient.nameValuePairs.add(new BasicNameValuePair("login",
+						GlobalVars.config.getUserName()));
+				warHttpClient.nameValuePairs.add(new BasicNameValuePair("password",
+						GlobalVars.config.getPassword()));
 				warHttpClient.executeHttpRequestAndParse(Consts.siteAddress,
 						Consts.GET_METHOD);
 				warHttpClient.executeHttpRequestAndParse(warHttpClient.goToURL,
