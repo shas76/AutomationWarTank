@@ -17,7 +17,7 @@ public class battleParserCallBack extends goToURLFinderParserCallBack {
 
 	public battleParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.angarTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.angarTab;
 	}
 
 	@Override

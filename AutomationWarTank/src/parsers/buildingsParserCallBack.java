@@ -4,7 +4,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-import shas.AutomationWarTank;
 import shas.Consts;
 import shas.GlobalVars;
 
@@ -16,17 +15,17 @@ public class buildingsParserCallBack extends goToURLFinderParserCallBack {
 	@Override
 	public void afterParse() {
 		super.afterParse();
-		if (AutomationWarTank.isTakeProductionMode
-				&& URL.equals(defaultGoToURL)) {
+		if (GlobalVars.isTakeProductionMode
+				/*&& URL.equals(defaultGoToURL)*/) {
 			URL = Consts.siteAddress + Consts.buildingsTab;
-			AutomationWarTank.isTakeProductionMode = false;
+			GlobalVars.isTakeProductionMode = false;
 
 		}
 	}
 
 	public buildingsParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.convoyTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.convoyTab;
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class buildingsParserCallBack extends goToURLFinderParserCallBack {
 
 					URL = href;
 					noMoreCalculte = true;
-					AutomationWarTank.isTakeProductionMode = true;
+					GlobalVars.isTakeProductionMode = true;
 					GlobalVars.logger.Logging("Take Production!!!");
 				}
 				if (href.contains("freeBoostLink")) {

@@ -13,7 +13,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-import shas.AutomationWarTank;
 import shas.Consts;
 import shas.GlobalVars;
 
@@ -29,6 +28,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private boolean inManeuverLink = false;
 	private boolean inAttackSpecialShellLink = false;
 	private int[] tableColumnsNumber = new int[20];
+	private long timeOut;
 
 	private String attackRegularShellLink = "";
 	private String attackSpecialShellLink = "";
@@ -42,7 +42,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 
 	public fightParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.angarTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.angarTab;
 		timeOut = 6050;
 	}
 
@@ -239,7 +239,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 						}
 					}
 					if (allied) {
-						if (AutomationWarTank.countSkippedPlayers == GlobalVars.config
+						if (GlobalVars.countSkippedPlayers == GlobalVars.config
 								.getLimitChangeTarget()) {
 							URL = maneuverLink;
 							fighterLog
@@ -253,19 +253,19 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 							fighterLog.write("\r\n" + "Skip our friend! "
 									+ enemyName + "\r\n");
 							fighterLog.write("\r\n" + "CountSkippedPlayers: "
-									+ AutomationWarTank.countSkippedPlayers
+									+ GlobalVars.countSkippedPlayers
 									+ "\r\n");
 
-							AutomationWarTank.countSkippedPlayers++;
+							GlobalVars.countSkippedPlayers++;
 							GlobalVars.logger.Logging("Skip our friend! "
 									+ enemyName);
 							GlobalVars.logger.Logging("CountSkippedPlayers: "
-									+ AutomationWarTank.countSkippedPlayers);
+									+ GlobalVars.countSkippedPlayers);
 						}
 					} else {
-						AutomationWarTank.countSkippedPlayers = 0;
+						GlobalVars.countSkippedPlayers = 0;
 						GlobalVars.logger.Logging("CountSkippedPlayers: "
-								+ AutomationWarTank.countSkippedPlayers);
+								+ GlobalVars.countSkippedPlayers);
 						if (enemyDurability > 800
 								&& !currentURL.contains(Consts.dmTab)) {
 							URL = changeTargetLink;

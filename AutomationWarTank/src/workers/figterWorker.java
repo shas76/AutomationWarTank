@@ -9,12 +9,12 @@ import shas.GlobalVars;
 
 public class figterWorker extends AbstractWorker {
 
-	private Date battleTime =null;
+	private Date battleTime = null;
 
 	private Date getNextButtle;
-	
+
 	@Override
-	public void doWork() throws ParseException  {
+	public void doWork() throws ParseException {
 		GlobalVars.logger.Logging("Check WarTime.", this);
 		Date currentTime = AutomationWarTank.extractTime(new Date());
 		boolean TimeForWar = false;
@@ -24,42 +24,63 @@ public class figterWorker extends AbstractWorker {
 		for (Date time : GlobalVars.config.getBattleTimes()) {
 			if (time.getTime() > currentTime.getTime()
 					&& (time.getTime() - currentTime.getTime() < 6 * Consts.msInMinunte)) {
-				battleUrl = Consts.siteAddress + GlobalVars.config.getBattleURLs()[index];
+				battleUrl = Consts.siteAddress
+						+ GlobalVars.config.getBattleURLs()[index];
 				TimeForWar = true;
 				battleTime = time;
-				GlobalVars.logger.Logging("Goto battle!!! URL" + GlobalVars.config.getBattleURLs()[index], this);
+				GlobalVars.logger.Logging("Goto battle!!! URL"
+						+ GlobalVars.config.getBattleURLs()[index], this);
 				break;
 			}
 			index++;
 		}
 		// TO DO check URL contains IN ARRAY
 		if (TimeForWar) {
-			if (!isURLBattle(goToURL)) {
-				AutomationWarTank.countSkippedPlayers = 0;
-				goToURL = battleUrl;
-			}
+			/*
+			 * if (!isURLBattle(goToURL)) { GlobalVars.countSkippedPlayers = 0;
+			 * // goToURL = battleUrl; }
+			 */
 		} else {
 			if (battleTime != null) {
-				if (isURLBattle(goToURL)
-						&& (currentTime.getTime() - battleTime.getTime()) > 2 * Consts.msInMinunte
-						&& goToURL.contains(Consts.REFRESH)) {
-					goToURL = Consts.siteAddress + Consts.angarTab;
-					battleTime = null;
-				}
+				/*
+				 * if (isURLBattle(goToURL) // && (currentTime.getTime() -
+				 * battleTime.getTime()) > 2 * Consts.msInMinunte // &&
+				 * goToURL.contains(Consts.REFRESH)) { // goToURL =
+				 * Consts.siteAddress + Consts.angarTab; battleTime = null; }
+				 */
 			}
 		}
 
 	}
 
-	@Override
-	public void doBeforeWhile() {
-		battleTime =null;		
-	}
+	/*
+	 * @Override public void doBeforeWhile() { battleTime =null; }
+	 */
 
 	@Override
 	public void doAfterWork() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
+	@Override
+	protected int getCountOfIdleSeconds() {
+		Date currentTime = AutomationWarTank.extractTime(new Date());
+		Date nextTimeForWar = new Date(3000,1,1);
+		
+		for (Date time : GlobalVars.config.getBattleTimes()) {
+			if (time.getTime() > currentTime.getTime()
+					&& (nextTimeForWar.getTime() > time.getTime())) {
+				nextTimeForWar = time;
+				battleUrl = Consts.siteAddress+ GlobalVars.config.getBattleURLs()[index];
+				TimeForWar = true;
+				battleTime = time;
+				GlobalVars.logger.Logging("Goto battle!!! URL"
+						+ GlobalVars.config.getBattleURLs()[index]);
+				break;
+			}
+			index++;
+		} // TO
+		return 0;
+	}
 }

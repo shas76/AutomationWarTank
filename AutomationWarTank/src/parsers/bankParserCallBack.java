@@ -13,7 +13,7 @@ public class bankParserCallBack extends goToURLFinderParserCallBack {
 
 	public bankParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
 	}
 
 	@Override

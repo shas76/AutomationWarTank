@@ -4,7 +4,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-import shas.AutomationWarTank;
 import shas.Consts;
 import shas.GlobalVars;
 
@@ -13,7 +12,7 @@ public class armoryParserCallBack extends goToURLFinderParserCallBack {
 
 	public armoryParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
 	}
 
 	@Override
@@ -29,12 +28,12 @@ public class armoryParserCallBack extends goToURLFinderParserCallBack {
 			// Check attack URL
 			if (href.contains("startProduceLink")
 					&& href.contains(GlobalVars.config
-							.getPlanArmoryProduction()[AutomationWarTank.currentArmoryProduction])
+							.getPlanArmoryProduction()[GlobalVars.currentArmoryProduction])
 					&& !href.contains("upgradeLink")) {
-				AutomationWarTank.currentArmoryProduction++;
-				if (AutomationWarTank.currentArmoryProduction >= GlobalVars.config
+				GlobalVars.currentArmoryProduction++;
+				if (GlobalVars.currentArmoryProduction >= GlobalVars.config
 						.getPlanArmoryProduction().length) {
-					AutomationWarTank.currentArmoryProduction = 0;
+					GlobalVars.currentArmoryProduction = 0;
 				}
 				URL = href;
 				noMoreCalculte = true;

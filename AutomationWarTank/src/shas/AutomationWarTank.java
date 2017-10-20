@@ -1,58 +1,26 @@
 package shas;
 
-import httpclients.WarHttpClientWrapper;
-
-import java.io.*;
-import java.io.ObjectInputStream.GetField;
 import java.net.MalformedURLException;
-import java.rmi.*;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.http.*;
-import org.apache.http.client.*;
-import org.apache.http.client.entity.*;
-import org.apache.http.client.methods.*;
-import org.apache.http.impl.client.*;
-import org.apache.http.message.*;
-import org.apache.http.util.*;
 
-import parsers.angarParserCallBack;
-import parsers.armoryParserCallBack;
-import parsers.bankParserCallBack;
-import parsers.battleParserCallBack;
-import parsers.buildingsParserCallBack;
-import parsers.convoyParserCallBack;
-import parsers.fightParserCallBack;
-import parsers.goToURLFinderParserCallBack;
-import parsers.loginPageParserCallBack;
-import parsers.mineParserCallBack;
-import parsers.polygonParserCallBack;
 import rmi.StopInterface;
 import rmi.StopListener;
 import utils.Config;
-import utils.Logger;
+import workers.AbstractWorker;
 import workers.GeneralProcessingWorker;
 
 public class AutomationWarTank {
 
-	public static int countSkippedPlayers = 0;
-	public static int currentMineProduction = 0;
-	public static int currentArmoryProduction = 0;
-	public static boolean isTakeProductionMode = false;
-
-	static int printResponseBoby = 0;
-
-	static int iterationCounter = 0;
-	static int iteractonThreshold;
+	// static int iterationCounter = 0;
+	// static int iteractonThreshold;
 
 	static StopListener rmiServer;
 
@@ -64,20 +32,10 @@ public class AutomationWarTank {
 	private static void init(String args[]) throws MalformedURLException,
 			RemoteException, NotBoundException, ConfigurationException,
 			ParseException {
-		if (args.length != 0) {
-			if (isCommand(args[0])) {
-				executeCommand(args[0]);
-			} else {
-				GlobalVars.config = new Config(args[0]);
-			}
-		} else {
-			// by default
-			GlobalVars.config = new Config();
-		}
 		GlobalVars.logger.Logging("RMI server is starting");
 
 		try { // special exception handler for registry creation
-			LocateRegistry.createRegistry(1099);
+			LocateRegistry.createRegistry(Consts.RMI_SERVER_PORT);
 			GlobalVars.logger.Logging("RMI registry created.");
 		} catch (RemoteException e) {
 			GlobalVars.logger.Logging("RMI registry already exists.");
@@ -93,8 +51,8 @@ public class AutomationWarTank {
 			return;
 		}
 		GlobalVars.logger.Logging("RMI  started");
-		currentMineProduction = 0;
-		currentArmoryProduction = 0;
+		GlobalVars.currentMineProduction = 0;
+		GlobalVars.currentArmoryProduction = 0;
 	}
 
 	private static boolean isCommand(String command) {
@@ -123,25 +81,39 @@ public class AutomationWarTank {
 	}
 
 	public static void main(String[] args) {
-		boolean recivedStopSignal = false;
 		GlobalVars.logger.Logging("Programm is starting.");
 		try {
+			if (args.length != 0) {
+				if (isCommand(args[0])) {
+					executeCommand(args[0]);
+					return;
+				} else {
+					GlobalVars.config = new Config(args[0]);
+				}
+			} else {
+				// by default
+				GlobalVars.config = new Config();
+			}
+
 			init(args);
 		} catch (Exception e) {
 			GlobalVars.logger.Logging(e);
 			return;
 		}
-		new Thread(new GeneralProcessingWorker());
+		AbstractWorker generalProcessingWorker = new GeneralProcessingWorker();
+		new Thread(generalProcessingWorker).start();
 		GlobalVars.logger.Logging("Programm started.");
 
 		try {
 			while (true) {
-				GlobalVars.monitor.wait();
-				if (Consts.COMMANDS.get(0).equals(GlobalVars.monitor)) {
+				synchronized (GlobalVars.monitor) {
+					GlobalVars.monitor.wait();
+				}
+				if (Consts.COMMANDS.get(0).equals(GlobalVars.command)) {
 					break;
 				}
-				if (Consts.COMMANDS.get(1).equals(GlobalVars.monitor)) {
-					GlobalVars.monitor = "";
+				if (Consts.COMMANDS.get(1).equals(GlobalVars.command)) {
+					GlobalVars.command = "";
 					GlobalVars.config.loadingConfiguration();
 				}
 			}
@@ -150,6 +122,7 @@ public class AutomationWarTank {
 			GlobalVars.logger.Logging(e);
 		}
 
+		generalProcessingWorker.setHasToStop(true);
 		/*
 		 * try {
 		 * 
