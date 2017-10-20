@@ -104,22 +104,22 @@ public class AutomationWarTank {
 		new Thread(generalProcessingWorker).start();
 		GlobalVars.logger.Logging("Programm started.");
 
-		try {
-			while (true) {
+			try {
+				while (true) {
 				synchronized (GlobalVars.monitor) {
 					GlobalVars.monitor.wait();
-				}
+						}
 				if (Consts.COMMANDS.get(0).equals(GlobalVars.command)) {
-					break;
-				}
+						break;
+					}
 				if (Consts.COMMANDS.get(1).equals(GlobalVars.command)) {
 					GlobalVars.command = "";
-					GlobalVars.config.loadingConfiguration();
+						GlobalVars.config.loadingConfiguration();
+					}
 				}
-			}
 
 		} catch (InterruptedException | ConfigurationException | ParseException e) {
-			GlobalVars.logger.Logging(e);
+				GlobalVars.logger.Logging(e);
 		}
 
 		generalProcessingWorker.setHasToStop(true);
