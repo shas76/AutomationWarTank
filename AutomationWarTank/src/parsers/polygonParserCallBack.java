@@ -13,7 +13,7 @@ public class polygonParserCallBack extends goToURLFinderParserCallBack {
 
 	public polygonParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
 	}
 
 	@Override

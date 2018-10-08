@@ -32,7 +32,6 @@ public class loginPageParserCallBack extends goToURLFinderParserCallBack {
 
 				if (href.contains(Consts.SHOW_SIGNIN_LINK)) {
 					URL = href;
-					timeOut = 0;
 				}
 			}
 		}

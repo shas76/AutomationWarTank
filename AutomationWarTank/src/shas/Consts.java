@@ -28,4 +28,6 @@ public final class Consts {
 	public static final String SHOW_SIGNIN_LINK = "-showSigninLink";
 	public static final String LOCATION_HEADER = "Location";
 	public static final List<String> COMMANDS = Arrays.asList("stop","reloadconfig");
+	public static final int RMI_SERVER_PORT = 2099;
+	//	static int printResponseBoby = 0;
 }

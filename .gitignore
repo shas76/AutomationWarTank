@@ -16,3 +16,5 @@ AutomationWarTank/bin/
 /fighterLog.txt
 /AutomationWarTank.jar
 /bin/
+.project
+.classpath

@@ -4,7 +4,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-import shas.AutomationWarTank;
 import shas.Consts;
 import shas.GlobalVars;
 
@@ -13,7 +12,7 @@ public class mineParserCallBack extends goToURLFinderParserCallBack {
 
 	public mineParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
 	}
 
 	@Override
@@ -28,12 +27,12 @@ public class mineParserCallBack extends goToURLFinderParserCallBack {
 
 			// Check attack URL
 			if (href.contains("startProduceLink")
-					&& href.contains(GlobalVars.config.getPlanMineProduction()[AutomationWarTank.currentMineProduction])
+					&& href.contains(GlobalVars.config.getPlanMineProduction()[GlobalVars.currentMineProduction])
 					&& !href.contains("upgradeLink")) {
-				AutomationWarTank.currentMineProduction++;
-				if (AutomationWarTank.currentMineProduction >= GlobalVars.config
+				GlobalVars.currentMineProduction++;
+				if (GlobalVars.currentMineProduction >= GlobalVars.config
 						.getPlanMineProduction().length) {
-					AutomationWarTank.currentMineProduction = 0;
+					GlobalVars.currentMineProduction = 0;
 				}
 				URL = href;
 				noMoreCalculte = true;

@@ -13,7 +13,7 @@ public class convoyParserCallBack extends goToURLFinderParserCallBack {
 
 	public convoyParserCallBack(String currentURL) {
 		super(currentURL);
-		defaultGoToURL = Consts.siteAddress + Consts.battleTab;
+//		defaultGoToURL = Consts.siteAddress + Consts.battleTab;
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class convoyParserCallBack extends goToURLFinderParserCallBack {
 						|| href.contains("attackRegular")
 						|| href.contains("startMasking")) {
 					URL = (String) href;
-					timeOut = 1000;
+//					timeOut = 1000;
 					noMoreCalculte = true;
 					GlobalVars.logger.Logging("Attack Convoy!!!");
 				}

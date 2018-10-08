@@ -8,5 +8,10 @@ public class GlobalVars {
 	public static boolean skipWaiting = false;
     public static Logger logger = new Logger();
     public static Config config;
-    public static String monitor = "";
+    public final static String monitor = "";
+    public static String command = "";
+	public static int currentArmoryProduction = 0;
+	public static int countSkippedPlayers = 0;
+	public static int currentMineProduction = 0;
+	public static boolean isTakeProductionMode = false;
 }

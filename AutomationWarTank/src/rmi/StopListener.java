@@ -14,13 +14,20 @@ public class StopListener extends UnicastRemoteObject implements StopInterface {
 	}
 
 	public void stop() {
-		GlobalVars.monitor = Consts.COMMANDS.get(0);// mainThread.n();
-		GlobalVars.monitor.notify();
+		GlobalVars.command = Consts.COMMANDS.get(0);// mainThread.n();
+		synchronized (GlobalVars.monitor) {
+			GlobalVars.monitor.notify();
+			
+		}
+		
 	}
 
 	@Override
 	public void reloadConfiguration() throws RemoteException {
-		GlobalVars.monitor = Consts.COMMANDS.get(1);// mainThread.n();
-		GlobalVars.monitor.notify();
+		GlobalVars.command = Consts.COMMANDS.get(1);// mainThread.n();
+		synchronized (GlobalVars.monitor) {
+			GlobalVars.monitor.notify();
+			
+		}
 	}
 }
