@@ -1,8 +1,5 @@
 package parsers;
 
-import java.util.Random;
-
-import shas.Consts;
 import shas.GlobalVars;
 
 public class angarParserCallBack extends goToURLFinderParserCallBack {
@@ -12,10 +9,6 @@ public class angarParserCallBack extends goToURLFinderParserCallBack {
 		if (GlobalVars.isTakeProductionMode) {
 			GlobalVars.isTakeProductionMode = false;
 //			timeOut = 1000;
-		}/* else {
-			Random rnd = new Random();
-			timeOut = (int) ((GlobalVars.config.getSleepInterval() + (rnd
-					.nextDouble() * GlobalVars.config.getRandomInterval())) * Consts.msInMinunte);
-		}*/
+		}
 	}
 }

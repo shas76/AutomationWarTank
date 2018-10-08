@@ -5,16 +5,14 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
 
 import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -133,9 +131,8 @@ public class HttpRequestProcessor {
 		ParserDelegator parserDelegator = new ParserDelegator();
 		parserDelegator.parse(new StringReader(responseBody), parser, true);
 		parser.afterParse();
-		GlobalVars.logger.Logging("goToURL=" + parser.getURL() + "   method="
-				+ parser.getMethod(), this);
-		return new Response(parser.getURL(), parser.getMethod(), 0);
+		GlobalVars.logger.Logging("Response =" + parser.getResponse(), this);
+		return parser.getResponse();
 	}
 
 	private goToURLFinderParserCallBack getParserByURL(String URL) {

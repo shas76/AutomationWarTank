@@ -17,7 +17,7 @@ import shas.Consts;
 import shas.GlobalVars;
 
 public class fightParserCallBack extends goToURLFinderParserCallBack {
-	private boolean noMoreCalculte = false;
+	
 	private Date timeLeft = null;
 	private int myDurability;
 	private int enemyDurability;
@@ -48,7 +48,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 
 	@Override
 	public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
-		if (noMoreCalculte)
+		if (isNoMoreCalculte())
 			return;
 		if (tag == Tag.A) {
 			Object attribute = attributes.getAttribute(Attribute.HREF);
@@ -62,7 +62,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 							+ TimeZone.getDefault().getOffset(
 									timeLeft.getTime());
 				}
-				noMoreCalculte = true;
+				setNoMoreCalculte(true);
 				GlobalVars.logger
 						.Logging("Applay Button 'Platoon, lets roll! Attack!' !!!");
 			}
@@ -75,7 +75,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 									timeLeft.getTime());
 				}
 
-				noMoreCalculte = true;
+				setNoMoreCalculte(true);
 				GlobalVars.logger.Logging(Consts.REFRESH);
 
 			}
@@ -120,7 +120,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 
 	@Override
 	public void handleText(char[] data, int pos) {
-		if (noMoreCalculte)
+		if (isNoMoreCalculte())
 			return;
 
 		String bodyText = new String(data);
@@ -189,7 +189,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 
 	@Override
 	public void handleEndTag(Tag tag, int pos) {
-		if (noMoreCalculte)
+		if (isNoMoreCalculte())
 			return;
 		if (tag == Tag.A) {
 			inRepairLink = false;

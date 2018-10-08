@@ -4,6 +4,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
+import http.request.processor.Response;
 import shas.Consts;
 
 public class loginPageParserCallBack extends goToURLFinderParserCallBack {
@@ -13,27 +14,24 @@ public class loginPageParserCallBack extends goToURLFinderParserCallBack {
 	}
 
 	@Override
-	public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
-		String href;
+	protected void handleStartTagA(Tag tag, MutableAttributeSet attributes, int pos) {
+		Object attribute = attributes.getAttribute(Attribute.HREF);
 
-		if (tag == Tag.FORM) {
-			if ("id1".equals((String) attributes.getAttribute(Attribute.ID))) {
-				URL = Consts.siteAddress + "/"
-						+ (String) attributes.getAttribute(Attribute.ACTION);
-				Method = (String) attributes.getAttribute(Attribute.METHOD);
-			}
-			;
-		}
-		if (tag == Tag.A) {
-			Object attribute = attributes.getAttribute(Attribute.HREF);
+		if (attribute != null) {
+			String href =formHREF((String) attribute);
 
-			if (attribute != null) {
-				href = Consts.siteAddress + "/" + (String) attribute;
-
-				if (href.contains(Consts.SHOW_SIGNIN_LINK)) {
-					URL = href;
-				}
+			if (href.contains(Consts.SHOW_SIGNIN_LINK)) {
+				getResponse().setRedirectUrl( href);
 			}
 		}
 	}
+
+	@Override
+	protected void handleStartTagFORM(Tag tag, MutableAttributeSet attributes, int pos) {
+		if ("id1".equals((String) attributes.getAttribute(Attribute.ID))) {
+			getResponse().setRedirectUrl(formHREF((String) attributes.getAttribute(Attribute.ACTION)));
+			getResponse().setRedirectMethod((String) attributes.getAttribute(Attribute.METHOD));
+		}
+	}
+
 }

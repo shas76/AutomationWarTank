@@ -1,7 +1,7 @@
 package workers;
 
-import java.util.Random;
-
+import http.request.processor.Request;
+import http.request.processor.Response;
 import shas.Consts;
 import shas.GlobalVars;
 
@@ -10,13 +10,13 @@ public class GeneralProcessingWorker extends AbstractWorker {
 	@Override
 	public void doWork() throws Exception {
 		for (String URL : GlobalVars.config.getGeneralProcessingURLs()) {
-			setGoToURL(Consts.siteAddress + URL);
-			setMethod(Consts.GET_METHOD);
+			Request request = new Request(Consts.siteAddress + URL);
 			while (true) {
-				super.doWork();
-				if ("".equals(getGoToURL())) {
+				Response responce =  getHttpRequestProcessor().processRequest(request);
+				if ("".equals(responce.getRedirectUrl())) {
 					break;
 				}
+				request = new Request(responce.getRedirectUrl(), responce.getRedirectMethod());
 				threadPause(Consts.ONE_SECOND);
 			}
 		}
@@ -24,18 +24,11 @@ public class GeneralProcessingWorker extends AbstractWorker {
 
 	@Override
 	protected void doAfterWork() {
-/*		Random rnd = new Random();
-		long timeOut = (int) ((GlobalVars.config.getSleepInterval() + (rnd
-				.nextDouble() * GlobalVars.config.getRandomInterval())) * Consts.msInMinunte);
-		GlobalVars.logger.Logging("Wating " + (int) (timeOut / 1000)
-				+ " seconds.", this);*/
-		setGoToURL("");
-//		threadPause(Consts.ONE_SECOND);
+
 	}
 
 	@Override
 	protected int getCountOfIdleSeconds() {
-
 		return 300;
 	}
 
