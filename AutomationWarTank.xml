@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Settings>
         <!-- -0- Cumulative shell , -1- Armor-piercing shell , -2- High-explosive shell ,-3- Med Pack  -->
-	<ShellsProduction>-1-,-1-,-2-,-1-,-0-,-3-,-2-,-1-,-0-,-2-,-1-</ShellsProduction>
+	<ShellsProduction>-1-,-2-,-0-,-1-,-2-,-0-,-3-</ShellsProduction>
         <!-- -0- Iron, -1- Lead, -2- Ore,-3- Steel -->
         <MineProduction>-0-</MineProduction>
 	<!-- 	<MineProduction>-1-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-,-2-,-0-,-2-,-0-,-3-</MineProduction>-->
@@ -16,7 +16,7 @@
 	<EnemyDurabilityLimitUsingShortTimeReload>100</EnemyDurabilityLimitUsingShortTimeReload>
 	<MaxDurability4UsingRepaer>400</MaxDurability4UsingRepaer>
         <FighterLogFileName>D:\PRIVATE\GitHubRepository\AutomationWarTank\fighterLog.txt</FighterLogFileName>
-        <Allied>"rzr ","mk ", "nl ", "ol ","mp ", "janek lawisz", "nop ", "nightmares", "how ", "howfarshad", "johnos", "tr ouble", "saythanks", "bb ","old fud","old ivan", "old seven" </Allied>
+        <Allied>"rzr ","mk ", "nl ", "ol ","mp ", "janek lawisz", "nop ", "nightmares", "how ", "howfarshad", "johnos", "tr ouble", "saythanks", "bb ","old fud","old ivan", "old seven", "cz ", "tr ", "pv ", "freelancer", "supergary", "gvozdeni"   </Allied>
         <LimitChangeTarget>5</LimitChangeTarget>
 	<UserName>Rzr shas</UserName>>
 	<Password>Kp19Gd78M</Password>
