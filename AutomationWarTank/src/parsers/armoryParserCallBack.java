@@ -3,13 +3,13 @@ package parsers;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Tag;
 
+import shas.Consts;
 import shas.GlobalVars;
 
-public class armoryParserCallBack extends goToURLFinderParserCallBack {
+public class armoryParserCallBack extends ProductionParserCallBack {
 
 	public armoryParserCallBack(String currentURL) {
 		super(currentURL);
-		// defaultGoToURL = Consts.siteAddress + Consts.buildingsTab;
 	}
 
 	@Override

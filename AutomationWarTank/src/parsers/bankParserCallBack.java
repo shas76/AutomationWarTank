@@ -6,12 +6,10 @@ import javax.swing.text.html.HTML.Tag;
 import shas.Consts;
 import shas.GlobalVars;
 
-public class bankParserCallBack extends goToURLFinderParserCallBack {
+public class bankParserCallBack extends ProductionParserCallBack {
 
 	public bankParserCallBack(String currentURL) {
 		super(currentURL);
-		pathToPage = Consts.ProductionPath;
-		getResponse().setRedirectUrl(Consts.buildingsTab);
 	}
 
 	@Override

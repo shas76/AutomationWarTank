@@ -85,8 +85,7 @@ public class AutomationWarTank {
 				} else {
 					GlobalVars.config = new Config(args[0]);
 				}
-			} else {
-				// by default
+			} else {				// by default
 				GlobalVars.config = new Config();
 			}
 
@@ -96,7 +95,9 @@ public class AutomationWarTank {
 			return;
 		}
 		AbstractWorker generalProcessingWorker = new GeneralProcessingWorker();
+		AbstractWorker fighterWorker = new FighterWorker();
 		new Thread(generalProcessingWorker).start();
+		new Thread(fighterWorker).start();
 		GlobalVars.logger.Logging("Programm started.");
 
 		try {
@@ -118,6 +119,7 @@ public class AutomationWarTank {
 		}
 
 		generalProcessingWorker.setHasToStop(true);
+		fighterWorker.setHasToStop(true);
 		/*
 		 * try {
 		 * 

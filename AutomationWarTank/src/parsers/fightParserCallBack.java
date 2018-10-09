@@ -50,7 +50,6 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 
 	public fightParserCallBack(String currentURL) {
 		super(currentURL);
-		// defaultGoToURL = Consts.siteAddress + Consts.angarTab;
 		getResponse().setDelay(500);
 		if (GlobalVars.afterShot) {
 			GlobalVars.afterShot = false;
@@ -99,9 +98,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private void setDelayBeforeFight(String hREF) {
 		getResponse().setRedirectUrl(hREF);
 		if (timeLeft != null) {
-			getResponse().setDelay(timeLeft.getTime() - 20000 // Apply before 20
-																// sec
-					+ TimeZone.getDefault().getOffset(timeLeft.getTime()));
+			getResponse().setDelay(timeLeft.getTime() - 1 + TimeZone.getDefault().getOffset(timeLeft.getTime()));
 		}
 		setNoMoreCalculte(true);
 	}
@@ -258,16 +255,15 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private boolean canUseSpecialShell() {
 		return links.get(ATTACK_SPECIAL_SHELL_LINK) != null
 				&& countSpecialShells > GlobalVars.config.getLimitUsingSpecialShell()
-				&& enemyDurability > GlobalVars.config.getLimitUsingSpecialShell()
-				&& (currentURL.contains(Consts.dmTab) || (countSpecialShells > GlobalVars.config
-						.getLimitUsingSpecialShell() + 100));
+				&& enemyDurability > GlobalVars.config.getLimitUsingSpecialShell() && (currentURL.contains(Consts.dmTab)
+						|| (countSpecialShells > GlobalVars.config.getLimitUsingSpecialShell() + 100));
 	}
 
 	private void skipFriend() {
 		if (GlobalVars.countSkippedPlayers == GlobalVars.config.getLimitChangeTarget()) {
 			getResponse().setRedirectUrl(links.get(MANEUVER_LINK));
-			fighterLog.write("\r\ncountSkippedPlayers == limitChangeTarget. Friend= " + enemyName
-					+ ". Go to maneuver\r\n");
+			fighterLog.write(
+					"\r\ncountSkippedPlayers == limitChangeTarget. Friend= " + enemyName + ". Go to maneuver\r\n");
 			timeOut = 1000;
 		} else {
 			getResponse().setRedirectUrl(links.get(CHANGE_TARGET_LINK));

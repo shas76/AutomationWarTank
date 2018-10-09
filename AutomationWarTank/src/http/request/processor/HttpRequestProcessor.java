@@ -128,23 +128,24 @@ public class HttpRequestProcessor {
 	}
 
 	private goToURLFinderParserCallBack getParserByURL(String URL) {
-		if (URL.toLowerCase().contains(Consts.angarTab.toLowerCase()))
+		String lURL = URL.toLowerCase();
+		if (lURL.contains(Consts.angarTab.toLowerCase()))
 			return new angarParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.battleTab.toLowerCase()))
+		if (lURL.contains(Consts.battleTab.toLowerCase()))
 			return new battleParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.buildingsTab.toLowerCase()))
+		if (lURL.contains(Consts.buildingsTab.toLowerCase()))
 			return new buildingsParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.convoyTab.toLowerCase()))
+		if (lURL.contains(Consts.convoyTab.toLowerCase()))
 			return new convoyParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.mineTab.toLowerCase()))
+		if (lURL.contains(Consts.mineTab.toLowerCase()))
 			return new mineParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.armoryTab.toLowerCase()))
+		if (lURL.contains(Consts.armoryTab.toLowerCase()))
 			return new armoryParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.polygonTab.toLowerCase()))
+		if (lURL.contains(Consts.polygonTab.toLowerCase()))
 			return new polygonParserCallBack(URL);
-		if (URL.toLowerCase().contains(Consts.bankTab.toLowerCase()))
+		if (lURL.contains(Consts.bankTab.toLowerCase()))
 			return new bankParserCallBack(URL);
-		if (URL.equals(Consts.siteAddress) || URL.toLowerCase().contains(Consts.SHOW_SIGNIN_LINK.toLowerCase()))
+		if (lURL.equals(Consts.siteAddress) || lURL.contains(Consts.SHOW_SIGNIN_LINK.toLowerCase()))
 			return new loginPageParserCallBack(URL);
 		if (isURLBattle(URL))
 			return new fightParserCallBack(URL);
@@ -153,7 +154,7 @@ public class HttpRequestProcessor {
 
 	protected boolean isURLBattle(String URL) {
 		for (String battlePath : GlobalVars.config.getBattleURLs()) {
-			if (URL.contains(battlePath)) {
+			if (URL.toLowerCase().contains(battlePath.toLowerCase())) {
 				return true;
 			}
 		}

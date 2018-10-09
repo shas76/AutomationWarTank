@@ -1,5 +1,7 @@
 package workers;
 
+import java.util.Random;
+
 import http.request.processor.Request;
 import http.request.processor.Response;
 import shas.Consts;
@@ -29,7 +31,8 @@ public class GeneralProcessingWorker extends AbstractWorker {
 
 	@Override
 	protected int getCountOfIdleSeconds() {
-		return 300;
+
+		return 300+(new Random()).nextInt(60);
 	}
 
 }

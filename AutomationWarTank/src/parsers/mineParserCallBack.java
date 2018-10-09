@@ -6,12 +6,10 @@ import javax.swing.text.html.HTML.Tag;
 import shas.Consts;
 import shas.GlobalVars;
 
-public class mineParserCallBack extends goToURLFinderParserCallBack {
+public class mineParserCallBack extends ProductionParserCallBack {
 
 	public mineParserCallBack(String currentURL) {
 		super(currentURL);
-		pathToPage = Consts.ProductionPath;
-		getResponse().setRedirectUrl(Consts.buildingsTab);
 	}
 
 	@Override

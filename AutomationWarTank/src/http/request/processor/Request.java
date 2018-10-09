@@ -37,7 +37,7 @@ public class Request implements Serializable {
 	}
 
 	public void setUrl(String url) {
-		this.url = url.toUpperCase();
+		this.url = url;
 	}
 
 	public List<NameValuePair> getParameters() {
@@ -53,7 +53,7 @@ public class Request implements Serializable {
 	}
 
 	public void setMethod(String method) {
-		this.method = method;
+		this.method = method.toUpperCase();
 	}
 
 	@Override
