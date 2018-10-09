@@ -25,13 +25,11 @@ public class AutomationWarTank {
 	static StopListener rmiServer;
 
 	public static Date extractTime(Date dateToExtract) throws ParseException {
-		return new SimpleDateFormat("HH:mm")
-				.parse(new SimpleDateFormat("HH:mm").format(dateToExtract));
+		return new SimpleDateFormat("HH:mm").parse(new SimpleDateFormat("HH:mm").format(dateToExtract));
 	}
 
-	private static void init(String args[]) throws MalformedURLException,
-			RemoteException, NotBoundException, ConfigurationException,
-			ParseException {
+	private static void init(String args[]) throws MalformedURLException, RemoteException, NotBoundException,
+			ConfigurationException, ParseException {
 		GlobalVars.logger.Logging("RMI server is starting");
 
 		try { // special exception handler for registry creation
@@ -60,19 +58,16 @@ public class AutomationWarTank {
 
 	}
 
-	private static void executeCommand(String command)
-			throws MalformedURLException, RemoteException, NotBoundException {
+	private static void executeCommand(String command) throws MalformedURLException, RemoteException, NotBoundException {
 		if (("stop").equals(command)) {
-			StopInterface stopProgram = (StopInterface) Naming
-					.lookup(Consts.RMI_SEVER_LOCATOR);
+			StopInterface stopProgram = (StopInterface) Naming.lookup(Consts.RMI_SEVER_LOCATOR);
 			GlobalVars.logger.Logging("Send signal for stopping");
 			stopProgram.stop();
 			GlobalVars.logger.Logging("Signal was sended");
 			return;
 		}
 		if ("reloadconfig".equals(command)) {
-			StopInterface stopProgram = (StopInterface) Naming
-					.lookup(Consts.RMI_SEVER_LOCATOR);
+			StopInterface stopProgram = (StopInterface) Naming.lookup(Consts.RMI_SEVER_LOCATOR);
 			GlobalVars.logger.Logging("Send signal for reload config");
 			stopProgram.reloadConfiguration();
 			GlobalVars.logger.Logging("Signal was sended");
@@ -104,22 +99,22 @@ public class AutomationWarTank {
 		new Thread(generalProcessingWorker).start();
 		GlobalVars.logger.Logging("Programm started.");
 
-			try {
-				while (true) {
+		try {
+			while (true) {
 				synchronized (GlobalVars.monitor) {
 					GlobalVars.monitor.wait();
-						}
+				}
 				if (Consts.COMMANDS.get(0).equals(GlobalVars.command)) {
-						break;
-					}
+					break;
+				}
 				if (Consts.COMMANDS.get(1).equals(GlobalVars.command)) {
 					GlobalVars.command = "";
-						GlobalVars.config.loadingConfiguration();
-					}
+					GlobalVars.config.loadingConfiguration();
 				}
+			}
 
 		} catch (InterruptedException | ConfigurationException | ParseException e) {
-				GlobalVars.logger.Logging(e);
+			GlobalVars.logger.Logging(e);
 		}
 
 		generalProcessingWorker.setHasToStop(true);

@@ -3,16 +3,15 @@ package http.request.processor;
 import java.io.Serializable;
 
 public class Response implements Serializable {
-	
+
 	private static final long serialVersionUID = -2812001349784140704L;
 
 	private String redirectUrl;
-	
-	private String redirectMethod;
-	
-	// in milliseconds
-	private int delay;
 
+	private String redirectMethod;
+
+	// in milliseconds
+	private long delay;
 
 	public Response(String redirectUrl, String redirectMethod, int delay) {
 		super();
@@ -29,11 +28,11 @@ public class Response implements Serializable {
 		this.redirectUrl = redirectUrl;
 	}
 
-	public int getDelay() {
+	public long getDelay() {
 		return delay;
 	}
 
-	public void setDelay(int delay) {
+	public void setDelay(long delay) {
 		this.delay = delay;
 	}
 
@@ -47,19 +46,16 @@ public class Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Response [redirectUrl=" + redirectUrl + ", redirectMethod="
-				+ redirectMethod + ", delay=" + delay + "]";
+		return "Response [redirectUrl=" + redirectUrl + ", redirectMethod=" + redirectMethod + ", delay=" + delay + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + delay;
-		result = prime * result
-				+ ((redirectMethod == null) ? 0 : redirectMethod.hashCode());
-		result = prime * result
-				+ ((redirectUrl == null) ? 0 : redirectUrl.hashCode());
+		result = prime * result + (int) (delay ^ (delay >>> 32));
+		result = prime * result + ((redirectMethod == null) ? 0 : redirectMethod.hashCode());
+		result = prime * result + ((redirectUrl == null) ? 0 : redirectUrl.hashCode());
 		return result;
 	}
 

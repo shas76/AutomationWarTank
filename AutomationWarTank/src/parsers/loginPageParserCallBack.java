@@ -4,7 +4,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
 
-import http.request.processor.Response;
 import shas.Consts;
 
 public class loginPageParserCallBack extends goToURLFinderParserCallBack {
@@ -14,16 +13,11 @@ public class loginPageParserCallBack extends goToURLFinderParserCallBack {
 	}
 
 	@Override
-	protected void handleStartTagA(Tag tag, MutableAttributeSet attributes, int pos) {
-		Object attribute = attributes.getAttribute(Attribute.HREF);
-
-		if (attribute != null) {
-			String href =formHREF((String) attribute);
-
-			if (href.contains(Consts.SHOW_SIGNIN_LINK)) {
-				getResponse().setRedirectUrl( href);
-			}
+	protected void handleStartTagA(String hREF, Tag tag, MutableAttributeSet attributes, int pos) {
+		if (hREF.contains(Consts.SHOW_SIGNIN_LINK)) {
+			getResponse().setRedirectUrl(hREF);
 		}
+
 	}
 
 	@Override

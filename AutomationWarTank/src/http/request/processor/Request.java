@@ -25,8 +25,7 @@ public class Request implements Serializable {
 		this(url, method, null);
 	}
 
-	public Request(String url, String method,
-			List<NameValuePair> parameters) {
+	public Request(String url, String method, List<NameValuePair> parameters) {
 		super();
 		this.url = url;
 		this.method = method.toUpperCase();
@@ -59,8 +58,7 @@ public class Request implements Serializable {
 
 	@Override
 	public String toString() {
-		return "request [url=" + url + ", method=" + method + ", parameters="
-				+ parameters + "]";
+		return "request [url=" + url + ", method=" + method + ", parameters=" + parameters + "]";
 	}
 
 	@Override
@@ -68,8 +66,7 @@ public class Request implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((method == null) ? 0 : method.hashCode());
-		result = prime * result
-				+ ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}

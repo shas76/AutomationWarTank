@@ -7,7 +7,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-
 import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.http.Header;
@@ -50,12 +49,10 @@ public class HttpRequestProcessor {
 			Response responce = processRequest(new Request(Consts.siteAddress));
 			responce = processRequest(new Request(responce.getRedirectUrl()));
 			// login
-			processRequest(new Request(responce.getRedirectUrl(),
-					Consts.POST_METHOD, Arrays.asList(new BasicNameValuePair(
-							"id1_hf_0", ""), new BasicNameValuePair("login",
-							GlobalVars.config.getUserName()),
-							new BasicNameValuePair("password",
-									GlobalVars.config.getPassword()))));
+			processRequest(new Request(responce.getRedirectUrl(), Consts.POST_METHOD, Arrays.asList(
+					new BasicNameValuePair("id1_hf_0", ""),
+					new BasicNameValuePair("login", GlobalVars.config.getUserName()), new BasicNameValuePair(
+							"password", GlobalVars.config.getPassword()))));
 			return httpclient;
 
 		}
@@ -82,17 +79,14 @@ public class HttpRequestProcessor {
 			if (Consts.POST_METHOD.equals(request.getMethod().toUpperCase())) {
 				httpRequest = new HttpPost(request.getUrl());
 				if (request.getParameters() != null) {
-					((HttpPost) httpRequest)
-							.setEntity(new UrlEncodedFormEntity(request
-									.getParameters()));
+					((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(request.getParameters()));
 				}
 			}
 		}
 		return getHttpclient().execute(httpRequest);
 	}
 
-	private String readContent(HttpResponse siteResponse)
-			throws UnsupportedEncodingException, IllegalStateException,
+	private String readContent(HttpResponse siteResponse) throws UnsupportedEncodingException, IllegalStateException,
 			IOException {
 		HttpEntity entity = siteResponse.getEntity();
 		Header contentEncoding = entity.getContentEncoding();
@@ -100,8 +94,7 @@ public class HttpRequestProcessor {
 		if (contentEncoding != null) {
 			charSet = contentEncoding.getValue();
 		}
-		InputStreamReader isr = new InputStreamReader(entity.getContent(),
-				charSet);
+		InputStreamReader isr = new InputStreamReader(entity.getContent(), charSet);
 		StringWriter sw = new StringWriter();
 		char[] charbuffer = new char[1024];
 		while (true) {
@@ -121,8 +114,7 @@ public class HttpRequestProcessor {
 		return responseBody;
 	}
 
-	private Response parseHTML(String responseBody,
-			goToURLFinderParserCallBack parser) throws IOException {
+	private Response parseHTML(String responseBody, goToURLFinderParserCallBack parser) throws IOException {
 		if (parser == null) {
 			GlobalVars.logger.Logging("Parser is NULL: ", this);
 			return null;
@@ -152,9 +144,7 @@ public class HttpRequestProcessor {
 			return new polygonParserCallBack(URL);
 		if (URL.toLowerCase().contains(Consts.bankTab.toLowerCase()))
 			return new bankParserCallBack(URL);
-		if (URL.equals(Consts.siteAddress)
-				|| URL.toLowerCase().contains(
-						Consts.SHOW_SIGNIN_LINK.toLowerCase()))
+		if (URL.equals(Consts.siteAddress) || URL.toLowerCase().contains(Consts.SHOW_SIGNIN_LINK.toLowerCase()))
 			return new loginPageParserCallBack(URL);
 		if (isURLBattle(URL))
 			return new fightParserCallBack(URL);
@@ -169,14 +159,11 @@ public class HttpRequestProcessor {
 		}
 		return false;
 	}
-	
+
 	public Response processRequest(final Request request) throws Exception {
 		HttpResponse response = executeRequest(request);
 		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
-			request.setUrl(Consts.siteAddress
-					+ "/"
-					+ getHeaderItem(response.getAllHeaders(),
-							Consts.LOCATION_HEADER));
+			request.setUrl(Consts.siteAddress + "/" + getHeaderItem(response.getAllHeaders(), Consts.LOCATION_HEADER));
 			return processRequest(request);
 		} else {
 			return parseHTML(readContent(response), getParserByURL(request.getUrl()));

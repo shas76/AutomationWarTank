@@ -17,9 +17,9 @@ public class StopListener extends UnicastRemoteObject implements StopInterface {
 		GlobalVars.command = Consts.COMMANDS.get(0);// mainThread.n();
 		synchronized (GlobalVars.monitor) {
 			GlobalVars.monitor.notify();
-			
+
 		}
-		
+
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class StopListener extends UnicastRemoteObject implements StopInterface {
 		GlobalVars.command = Consts.COMMANDS.get(1);// mainThread.n();
 		synchronized (GlobalVars.monitor) {
 			GlobalVars.monitor.notify();
-			
+
 		}
 	}
 }

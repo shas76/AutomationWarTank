@@ -12,7 +12,7 @@ public class GeneralProcessingWorker extends AbstractWorker {
 		for (String URL : GlobalVars.config.getGeneralProcessingURLs()) {
 			Request request = new Request(Consts.siteAddress + URL);
 			while (true) {
-				Response responce =  getHttpRequestProcessor().processRequest(request);
+				Response responce = getHttpRequestProcessor().processRequest(request);
 				if ("".equals(responce.getRedirectUrl())) {
 					break;
 				}

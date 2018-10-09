@@ -24,12 +24,10 @@ public class figterWorker extends AbstractWorker {
 		for (Date time : GlobalVars.config.getBattleTimes()) {
 			if (time.getTime() > currentTime.getTime()
 					&& (time.getTime() - currentTime.getTime() < 6 * Consts.msInMinunte)) {
-				battleUrl = Consts.siteAddress
-						+ GlobalVars.config.getBattleURLs()[index];
+				battleUrl = Consts.siteAddress + GlobalVars.config.getBattleURLs()[index];
 				TimeForWar = true;
 				battleTime = time;
-				GlobalVars.logger.Logging("Goto battle!!! URL"
-						+ GlobalVars.config.getBattleURLs()[index], this);
+				GlobalVars.logger.Logging("Goto battle!!! URL" + GlobalVars.config.getBattleURLs()[index], this);
 				break;
 			}
 			index++;
@@ -66,17 +64,15 @@ public class figterWorker extends AbstractWorker {
 	@Override
 	protected int getCountOfIdleSeconds() {
 		Date currentTime = AutomationWarTank.extractTime(new Date());
-		Date nextTimeForWar = new Date(3000,1,1);
-		
+		Date nextTimeForWar = new Date(3000, 1, 1);
+
 		for (Date time : GlobalVars.config.getBattleTimes()) {
-			if (time.getTime() > currentTime.getTime()
-					&& (nextTimeForWar.getTime() > time.getTime())) {
+			if (time.getTime() > currentTime.getTime() && (nextTimeForWar.getTime() > time.getTime())) {
 				nextTimeForWar = time;
-				battleUrl = Consts.siteAddress+ GlobalVars.config.getBattleURLs()[index];
+				battleUrl = Consts.siteAddress + GlobalVars.config.getBattleURLs()[index];
 				TimeForWar = true;
 				battleTime = time;
-				GlobalVars.logger.Logging("Goto battle!!! URL"
-						+ GlobalVars.config.getBattleURLs()[index]);
+				GlobalVars.logger.Logging("Goto battle!!! URL" + GlobalVars.config.getBattleURLs()[index]);
 				break;
 			}
 			index++;
