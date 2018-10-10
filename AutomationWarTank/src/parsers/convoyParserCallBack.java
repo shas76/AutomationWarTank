@@ -19,7 +19,7 @@ public class convoyParserCallBack extends goToURLFinderParserCallBack {
 	@Override
 	protected void handleStartTagA(String hREF, Tag tag, MutableAttributeSet attributes, int pos) {
 
-		if (linksOfActions.contains(hREF)) {
+		if (linksOfActions.stream().anyMatch(lnk -> hREF.contains(lnk))) {
 			getResponse().setRedirectUrl(hREF);
 			setNoMoreCalculte(true);
 			GlobalVars.logger.Logging("Attack Convoy!!!");

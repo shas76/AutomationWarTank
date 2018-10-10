@@ -149,7 +149,7 @@ public class HttpRequestProcessor {
 			return new loginPageParserCallBack(URL);
 		if (isURLBattle(URL))
 			return new fightParserCallBack(URL);
-		return null;
+		return new goToURLFinderParserCallBack(URL);
 	}
 
 	protected boolean isURLBattle(String URL) {

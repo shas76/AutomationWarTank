@@ -1,6 +1,5 @@
 package workers;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import http.request.processor.Request;

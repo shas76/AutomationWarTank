@@ -1,7 +1,11 @@
 package parsers;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
@@ -16,18 +20,33 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	private Response response = new Response("", Consts.GET_METHOD, 0);
 	private boolean noMoreCalculte = false;
 	private boolean checkActive = false;
-	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank");
+	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank", "awardLink",
+			"market", "buyGold");
 	private String currentActiveHREF = "";
+	private Map<String, String> urlToPathOfPage = new HashMap<String, String>();
+	{
+		urlToPathOfPage.put("Mine", Consts.ProductionPath);
+		urlToPathOfPage.put("Armory", Consts.ProductionPath);
+		urlToPathOfPage.put("Bank", Consts.ProductionPath);
+		urlToPathOfPage.put("missions", "/missions/");
+	}
 
 	protected String currentURL;
 	protected String pathToPage;
+	protected boolean doCheckActive = true;
 
-	goToURLFinderParserCallBack(String currentURL) {
+	public goToURLFinderParserCallBack(String currentURL) {
 		super();
 		this.currentURL = currentURL;
-		pathToPage = "/";
+		pathToPage = getPath4URL(currentURL);
+		
 	}
 
+	protected String getPath4URL(String url)
+	{
+		return urlToPathOfPage.entrySet().stream().filter( entry ->currentURL.contains(entry.getKey()) ).map(Map.Entry::getValue).findFirst().orElse("/");
+	}
+	
 	public Response getResponse() {
 		return response;
 	}
@@ -41,7 +60,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	protected String formHREF(String relativeHREF) {
-		return Consts.siteAddress + pathToPage + relativeHREF;
+		String relativePathToPage = pathToPage + relativeHREF;
+		return Consts.siteAddress + relativePathToPage.replace("//", "/");
 	}
 
 	protected String getHREF(Object attribute) {
@@ -119,7 +139,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		if (tag == Tag.A) {
 			String hREF = getHREF(attributes.getAttribute(Attribute.HREF));
 			handleStartTagA(hREF, tag, attributes, pos);
-			if (linksToCheckIsActive.contains(hREF)) {
+			if (doCheckActive && linksToCheckIsActive.stream().anyMatch(lnk -> hREF.contains(lnk))) {
 				currentActiveHREF = hREF;
 				checkActive = true;
 			}

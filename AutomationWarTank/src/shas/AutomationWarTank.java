@@ -15,6 +15,7 @@ import rmi.StopInterface;
 import rmi.StopListener;
 import utils.Config;
 import workers.AbstractWorker;
+import workers.FighterWorker;
 import workers.GeneralProcessingWorker;
 
 public class AutomationWarTank {
@@ -95,9 +96,9 @@ public class AutomationWarTank {
 			return;
 		}
 		AbstractWorker generalProcessingWorker = new GeneralProcessingWorker();
-		AbstractWorker fighterWorker = new FighterWorker();
+//		AbstractWorker fighterWorker = new FighterWorker();
 		new Thread(generalProcessingWorker).start();
-		new Thread(fighterWorker).start();
+//		new Thread(fighterWorker).start();
 		GlobalVars.logger.Logging("Programm started.");
 
 		try {
@@ -119,7 +120,7 @@ public class AutomationWarTank {
 		}
 
 		generalProcessingWorker.setHasToStop(true);
-		fighterWorker.setHasToStop(true);
+//		fighterWorker.setHasToStop(true);
 		/*
 		 * try {
 		 * 

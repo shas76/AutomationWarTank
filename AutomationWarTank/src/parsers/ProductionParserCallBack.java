@@ -6,8 +6,8 @@ public class ProductionParserCallBack extends goToURLFinderParserCallBack {
 
 	public ProductionParserCallBack(String currentURL) {
 		super(currentURL);
-		pathToPage = Consts.ProductionPath;
-		getResponse().setRedirectUrl(Consts.buildingsTab);
+		getResponse().setRedirectUrl(Consts.siteAddress+Consts.buildingsTab);
+		doCheckActive = false;
 	}
 
 }

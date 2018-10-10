@@ -77,7 +77,7 @@ public final class Config {
 		int tempLimitChangeTarget = configRead.getInt("LimitChangeTarget", 10);
 		String tempUserName = configRead.getString("UserName");
 		String tempPassword = configRead.getString("Password");
-		enableBodyLogging = configRead.getInt("Enablelogger.LoggingBody", 0);
+		enableBodyLogging = configRead.getInt("EnableLoggingBody", 0);
 		String tempAlliedExceptions = configRead.getString("AlliedExceptions").toLowerCase();
 
 		planArmoryProduction = tempPlanArmoryProduction;

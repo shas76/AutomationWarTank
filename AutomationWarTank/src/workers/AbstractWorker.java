@@ -35,19 +35,17 @@ public abstract class AbstractWorker implements Runnable {
 			} else {
 				try {
 					init();
-					while (!isHasToStop()) {
-						GlobalVars.logger.Logging("Start next Iteration.", this);
-						doWork();
-						GlobalVars.logger.Logging("The Iteration was ended.", this);
-						doAfterWork();
-					}
+					// while (!isHasToStop()) {
+					GlobalVars.logger.Logging("Start next Iteration.", this);
+					doWork();
+					GlobalVars.logger.Logging("The Iteration was ended.", this);
+					doAfterWork();
+					// }
 				} catch (Exception e) {
 					GlobalVars.logger.Logging(e, this);
 				}
-			}
-			if (countOfIdleIteraction == 0) {
 				countOfIdleIteraction = getCountOfIdleSeconds() / 5;
-				GlobalVars.logger.Logging("Wating " + (int) (countOfIdleIteraction * 5 / 1000) + " seconds.", this);
+				GlobalVars.logger.Logging("Wating " + (int) (countOfIdleIteraction * 5) + " seconds.", this);
 			}
 
 			threadPause(5 * Consts.ONE_SECOND);
