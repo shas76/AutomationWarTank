@@ -32,7 +32,7 @@ public class GeneralProcessingWorker extends AbstractWorker {
 	@Override
 	protected int getCountOfIdleSeconds() {
 
-		return 300+(new Random()).nextInt(60);
+		return 300 + (new Random()).nextInt(60);
 	}
 
 }

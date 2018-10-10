@@ -85,7 +85,7 @@ public class AutomationWarTank {
 				} else {
 					GlobalVars.config = new Config(args[0]);
 				}
-			} else {				// by default
+			} else { // by default
 				GlobalVars.config = new Config();
 			}
 

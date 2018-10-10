@@ -255,15 +255,16 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private boolean canUseSpecialShell() {
 		return links.get(ATTACK_SPECIAL_SHELL_LINK) != null
 				&& countSpecialShells > GlobalVars.config.getLimitUsingSpecialShell()
-				&& enemyDurability > GlobalVars.config.getLimitUsingSpecialShell() && (currentURL.contains(Consts.dmTab)
-						|| (countSpecialShells > GlobalVars.config.getLimitUsingSpecialShell() + 100));
+				&& enemyDurability > GlobalVars.config.getLimitUsingSpecialShell()
+				&& (currentURL.contains(Consts.dmTab) || (countSpecialShells > GlobalVars.config
+						.getLimitUsingSpecialShell() + 100));
 	}
 
 	private void skipFriend() {
 		if (GlobalVars.countSkippedPlayers == GlobalVars.config.getLimitChangeTarget()) {
 			getResponse().setRedirectUrl(links.get(MANEUVER_LINK));
-			fighterLog.write(
-					"\r\ncountSkippedPlayers == limitChangeTarget. Friend= " + enemyName + ". Go to maneuver\r\n");
+			fighterLog.write("\r\ncountSkippedPlayers == limitChangeTarget. Friend= " + enemyName
+					+ ". Go to maneuver\r\n");
 			timeOut = 1000;
 		} else {
 			getResponse().setRedirectUrl(links.get(CHANGE_TARGET_LINK));

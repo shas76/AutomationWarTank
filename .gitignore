@@ -6,15 +6,15 @@
 *~
 
 ## Eclipse IDE
-AutomationWarTank/.project
-AutomationWarTank/.settings/
+## AutomationWarTank/.project
+##AutomationWarTank/.settings/
 AutomationWarTank/.bin/
-AutomationWarTank/.classpath
+##AutomationWarTank/.classpath
 AutomationWarTank/bin/
 
 #main files
 /fighterLog.txt
 /AutomationWarTank.jar
 /bin/
-.project
-.classpath
+##.project
+##.classpath
