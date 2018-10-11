@@ -18,10 +18,11 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	private Response response = new Response("", Consts.GET_METHOD, 0);
 	private boolean noMoreCalculte = false;
 	private boolean checkActive = false;
-	
+
 	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank", "awardLink",
-			"market", "buyGold");
+			"market", "buyGold", "freeBoostLink", "takeProductionLink", Consts.buildingsTab);
 	private List<String> pagesNotCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank");
+
 	private String currentActiveHREF = "";
 	private Map<String, String> urlToPathOfPage = new HashMap<String, String>();
 	{
@@ -35,7 +36,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		backUrls4Page.put("Mine", Consts.buildingsTab);
 		backUrls4Page.put("Armory", Consts.buildingsTab);
 		backUrls4Page.put("Bank", Consts.buildingsTab);
-		backUrls4Page.put("polygon",Consts.buildingsTab);
+		backUrls4Page.put("polygon", Consts.buildingsTab);
+		backUrls4Page.put(Consts.buildingsTab, Consts.angarTab);
 	}
 	protected String currentURL;
 	protected String pathToPage;
@@ -45,9 +47,9 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		super();
 		this.currentURL = currentURL;
 		doCheckActive = !pagesNotCheckIsActive.stream().anyMatch(lnk -> currentURL.contains(lnk));
-		pathToPage = getPath4URL(currentURL,urlToPathOfPage, "/");
-		String backPath = getPath4URL(currentURL,backUrls4Page,"");
-		getResponse().setRedirectUrl("".equals(backPath)?backPath:Consts.siteAddress+backPath);
+		pathToPage = getPath4URL(currentURL, urlToPathOfPage, "/");
+		String backPath = getPath4URL(currentURL, backUrls4Page, "");
+		getResponse().setRedirectUrl("".equals(backPath) ? backPath : Consts.siteAddress + backPath);
 	}
 
 	protected String getPath4URL(String url, Map<String, String> listOfUrls4Page, String defaultValue) {
@@ -77,7 +79,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	// Start Tags
-	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes, final int pos) {
+	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes,
+			final int pos) {
 
 	};
 

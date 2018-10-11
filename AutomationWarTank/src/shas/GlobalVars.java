@@ -13,7 +13,7 @@ public class GlobalVars {
 	public static int currentArmoryProduction = 0;
 	public static int countSkippedPlayers = 0;
 	public static int currentMineProduction = 0;
-	public static boolean isTakeProductionMode = false;
+//	public static boolean isTakeProductionMode = false;
 	public static boolean afterShot = false;
 	public static long timeOfShot = 0;
 }
