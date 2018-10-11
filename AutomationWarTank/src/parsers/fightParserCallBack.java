@@ -98,7 +98,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private void setDelayBeforeFight(String hREF) {
 		getResponse().setRedirectUrl(hREF);
 		if (timeLeft != null) {
-			getResponse().setDelay(timeLeft.getTime() - 1 + TimeZone.getDefault().getOffset(timeLeft.getTime()));
+			getResponse().setDelay(timeLeft.getTime() + TimeZone.getDefault().getOffset(timeLeft.getTime()));
 		}
 		setNoMoreCalculte(true);
 	}
@@ -228,15 +228,23 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private void prepareForShot() {
 		GlobalVars.countSkippedPlayers = 0;
 		GlobalVars.logger.Logging("CountSkippedPlayers: " + GlobalVars.countSkippedPlayers);
-		if (enemyDurability > Consts.ENEMY_DURABILITY_TO_SHOT && !currentURL.contains(Consts.dmTab)) {
+		if (enemyDurability > Consts.ENEMY_DURABILITY_TO_SHOT && !currentURL.contains(Consts.dmTab)
+				|| enemyDurability == 0) {
 			getResponse().setRedirectUrl(links.get(CHANGE_TARGET_LINK));
+			GlobalVars.afterShot = true;
 		} else {
 			long intervalBetweenShots = Consts.MAX_INTERVAL_BETWEEN_SHOT;
 			if (enemyDurability < GlobalVars.config.getEnemyDurabilityLimitUsingShortTimeReload()
 					&& enemyDurability > 0) {
 				intervalBetweenShots = Consts.MIN_INTERVAL_BETWEEN_SHOT;
 			}
-			if (getCurrentTime() - GlobalVars.timeOfShot > intervalBetweenShots) {
+			long currentTime = getCurrentTime();
+			long difference = currentTime - GlobalVars.timeOfShot;
+			GlobalVars.logger.Logging("Difference:" + difference + " Current time: " + currentTime
+					+ " Time Last Shot: " + GlobalVars.timeOfShot + " IntervalBetweenShots is " + intervalBetweenShots
+					+ " AfterShot is " + GlobalVars.afterShot);
+
+			if (difference > intervalBetweenShots) {
 				if (canUseSpecialShell()) {
 					getResponse().setRedirectUrl(links.get(ATTACK_SPECIAL_SHELL_LINK));
 				} else {

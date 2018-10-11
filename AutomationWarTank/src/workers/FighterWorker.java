@@ -14,6 +14,8 @@ public class FighterWorker extends AbstractWorker {
 
 	private long delay = 0;
 
+	private Date endTime = new Date();
+	
 	@Override
 	public void doWork() throws Exception {
 
@@ -24,8 +26,11 @@ public class FighterWorker extends AbstractWorker {
 			int index = 0;
 			for (Date time : GlobalVars.config.getBattleTimes()) {
 				if (time.getTime() > currentTime.getTime()) {
-					delay = (time.getTime() - currentTime.getTime()) / Consts.ONE_SECOND - 20;
-					request = new Request(Consts.siteAddress + GlobalVars.config.getBattleURLs()[index]);
+					endTime = new Date();
+					endTime.setHours(time.getHours());
+					endTime.setMinutes(time.getMinutes()+1 );
+					request = getHttpRequestProcessor().processRequest(new Request(Consts.siteAddress + GlobalVars.config.getBattleURLs()[index]));
+					delay = request.getPreviouceResponse().getDelay() / Consts.ONE_SECOND - 20  ;
 					GlobalVars.logger.Logging("Waiting for battle!!! URL " + request.getUrl() + " seconds " + delay,
 							this);
 					break;
@@ -35,12 +40,11 @@ public class FighterWorker extends AbstractWorker {
 		} else {
 			GlobalVars.logger.Logging("Goto battle!!! URL" + request.getUrl(), this);
 			while (!isHasToStop()) {
-				Response responce = getHttpRequestProcessor().processRequest(request);
-				if ("".equals(responce.getRedirectUrl())) {
+				request = getHttpRequestProcessor().processRequest(request);
+				if (request.getUrl().contains(Consts.REFRESH) && new Date().getTime()>endTime.getTime()) {
 					break;
 				}
-				request = new Request(responce.getRedirectUrl(), responce.getRedirectMethod());
-				threadPause(responce.getDelay());
+				threadPause(request.getPreviouceResponse().getDelay());
 			}
 			request = null;
 		}

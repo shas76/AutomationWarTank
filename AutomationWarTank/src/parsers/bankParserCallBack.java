@@ -5,7 +5,7 @@ import javax.swing.text.html.HTML.Tag;
 
 import shas.GlobalVars;
 
-public class bankParserCallBack extends ProductionParserCallBack {
+public class bankParserCallBack extends goToURLFinderParserCallBack {
 
 	public bankParserCallBack(String currentURL) {
 		super(currentURL);

@@ -5,7 +5,7 @@ import javax.swing.text.html.HTML.Tag;
 
 import shas.GlobalVars;
 
-public class armoryParserCallBack extends ProductionParserCallBack {
+public class armoryParserCallBack extends goToURLFinderParserCallBack {
 
 	public armoryParserCallBack(String currentURL) {
 		super(currentURL);

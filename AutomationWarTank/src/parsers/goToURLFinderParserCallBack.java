@@ -1,7 +1,5 @@
 package parsers;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +18,10 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	private Response response = new Response("", Consts.GET_METHOD, 0);
 	private boolean noMoreCalculte = false;
 	private boolean checkActive = false;
+	
 	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank", "awardLink",
 			"market", "buyGold");
+	private List<String> pagesNotCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank");
 	private String currentActiveHREF = "";
 	private Map<String, String> urlToPathOfPage = new HashMap<String, String>();
 	{
@@ -30,23 +30,31 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		urlToPathOfPage.put("Bank", Consts.ProductionPath);
 		urlToPathOfPage.put("missions", "/missions/");
 	}
-
+	private Map<String, String> backUrls4Page = new HashMap<String, String>();
+	{
+		backUrls4Page.put("Mine", Consts.buildingsTab);
+		backUrls4Page.put("Armory", Consts.buildingsTab);
+		backUrls4Page.put("Bank", Consts.buildingsTab);
+		backUrls4Page.put("polygon",Consts.buildingsTab);
+	}
 	protected String currentURL;
 	protected String pathToPage;
-	protected boolean doCheckActive = true;
+	protected boolean doCheckActive;
 
 	public goToURLFinderParserCallBack(String currentURL) {
 		super();
 		this.currentURL = currentURL;
-		pathToPage = getPath4URL(currentURL);
-		
+		doCheckActive = !pagesNotCheckIsActive.stream().anyMatch(lnk -> currentURL.contains(lnk));
+		pathToPage = getPath4URL(currentURL,urlToPathOfPage, "/");
+		String backPath = getPath4URL(currentURL,backUrls4Page,"");
+		getResponse().setRedirectUrl("".equals(backPath)?backPath:Consts.siteAddress+backPath);
 	}
 
-	protected String getPath4URL(String url)
-	{
-		return urlToPathOfPage.entrySet().stream().filter( entry ->currentURL.contains(entry.getKey()) ).map(Map.Entry::getValue).findFirst().orElse("/");
+	protected String getPath4URL(String url, Map<String, String> listOfUrls4Page, String defaultValue) {
+		return listOfUrls4Page.entrySet().stream().filter(entry -> currentURL.contains(entry.getKey()))
+				.map(Map.Entry::getValue).findFirst().orElse(defaultValue);
 	}
-	
+
 	public Response getResponse() {
 		return response;
 	}

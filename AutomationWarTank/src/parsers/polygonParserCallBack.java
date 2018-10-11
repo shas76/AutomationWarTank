@@ -10,8 +10,6 @@ public class polygonParserCallBack extends goToURLFinderParserCallBack {
 
 	public polygonParserCallBack(String currentURL) {
 		super(currentURL);
-		getResponse().setRedirectUrl(Consts.siteAddress+Consts.buildingsTab);
-		doCheckActive = false;
 	}
 
 	@Override

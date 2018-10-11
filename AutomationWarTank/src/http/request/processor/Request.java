@@ -17,19 +17,26 @@ public class Request implements Serializable {
 
 	private List<NameValuePair> parameters;
 
+	private Response previouceResponse ; 
+	
+	public Request( Response previouceResponse) {
+		this(previouceResponse.getRedirectUrl(),previouceResponse.getRedirectMethod(),null, previouceResponse);
+	}
+	
 	public Request(String url) {
 		this(url, Consts.GET_METHOD);
 	}
-
+	
 	public Request(String url, String method) {
-		this(url, method, null);
+		this(url, method, null, null);
 	}
-
-	public Request(String url, String method, List<NameValuePair> parameters) {
+	
+	public Request(String url, String method, List<NameValuePair> parameters, Response previouceResponse  ) {
 		super();
 		this.url = url;
 		this.method = method.toUpperCase();
 		this.parameters = parameters;
+		this.previouceResponse = previouceResponse;
 	}
 
 	public String getUrl() {
@@ -56,9 +63,18 @@ public class Request implements Serializable {
 		this.method = method.toUpperCase();
 	}
 
+	public Response getPreviouceResponse() {
+		return previouceResponse;
+	}
+
+	public void setPreviouceResponse(Response previouceResponse) {
+		this.previouceResponse = previouceResponse;
+	}
+
 	@Override
 	public String toString() {
-		return "request [url=" + url + ", method=" + method + ", parameters=" + parameters + "]";
+		return "Request [url=" + url + ", method=" + method + ", parameters=" + parameters + ", previouceResponse="
+				+ previouceResponse + "]";
 	}
 
 	@Override
@@ -67,6 +83,7 @@ public class Request implements Serializable {
 		int result = 1;
 		result = prime * result + ((method == null) ? 0 : method.hashCode());
 		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((previouceResponse == null) ? 0 : previouceResponse.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
@@ -95,6 +112,13 @@ public class Request implements Serializable {
 				return false;
 			}
 		} else if (!parameters.equals(other.parameters)) {
+			return false;
+		}
+		if (previouceResponse == null) {
+			if (other.previouceResponse != null) {
+				return false;
+			}
+		} else if (!previouceResponse.equals(other.previouceResponse)) {
 			return false;
 		}
 		if (url == null) {

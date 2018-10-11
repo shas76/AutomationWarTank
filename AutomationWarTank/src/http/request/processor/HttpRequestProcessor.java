@@ -46,13 +46,13 @@ public class HttpRequestProcessor {
 			httpclient = HttpClients.createDefault();
 			// Login for registered users
 
-			Response responce = processRequest(new Request(Consts.siteAddress));
-			responce = processRequest(new Request(responce.getRedirectUrl()));
+			Response responce = processRequestInternal(new Request(Consts.siteAddress));
+			responce = processRequestInternal(new Request(responce.getRedirectUrl()));
 			// login
-			processRequest(new Request(responce.getRedirectUrl(), Consts.POST_METHOD, Arrays.asList(
+			processRequestInternal(new Request(responce.getRedirectUrl(), Consts.POST_METHOD, Arrays.asList(
 					new BasicNameValuePair("id1_hf_0", ""),
 					new BasicNameValuePair("login", GlobalVars.config.getUserName()), new BasicNameValuePair(
-							"password", GlobalVars.config.getPassword()))));
+							"password", GlobalVars.config.getPassword())), responce));
 			return httpclient;
 
 		}
@@ -161,14 +161,18 @@ public class HttpRequestProcessor {
 		return false;
 	}
 
-	public Response processRequest(final Request request) throws Exception {
+	private Response processRequestInternal(final Request request) throws Exception {
 		HttpResponse response = executeRequest(request);
 		if (response.getStatusLine().getStatusCode() == Consts.request_redirected_302) {
 			request.setUrl(Consts.siteAddress + "/" + getHeaderItem(response.getAllHeaders(), Consts.LOCATION_HEADER));
-			return processRequest(request);
+			return processRequestInternal(request);
 		} else {
 			return parseHTML(readContent(response), getParserByURL(request.getUrl()));
 		}
+	}
+
+	public Request processRequest(final Request request) throws Exception {
+		return new Request(processRequestInternal(request));
 	}
 
 }

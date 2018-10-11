@@ -5,7 +5,7 @@ import javax.swing.text.html.HTML.Tag;
 
 import shas.GlobalVars;
 
-public class mineParserCallBack extends ProductionParserCallBack {
+public class mineParserCallBack extends goToURLFinderParserCallBack {
 
 	public mineParserCallBack(String currentURL) {
 		super(currentURL);
