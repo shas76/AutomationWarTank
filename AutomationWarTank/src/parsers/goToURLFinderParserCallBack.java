@@ -20,7 +20,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	private boolean checkActive = false;
 
 	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank", "awardLink",
-			"market", "buyGold", "freeBoostLink", "takeProductionLink", Consts.buildingsTab);
+			"market", "buyGold", "freeBoostLink", "takeProductionLink", Consts.buildingsTab, Consts.convoyTab,
+			"missions/", "Advanced");
 	private List<String> pagesNotCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank");
 
 	private String currentActiveHREF = "";
@@ -38,6 +39,9 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		backUrls4Page.put("Bank", Consts.buildingsTab);
 		backUrls4Page.put("polygon", Consts.buildingsTab);
 		backUrls4Page.put(Consts.buildingsTab, Consts.angarTab);
+		backUrls4Page.put(Consts.convoyTab, Consts.angarTab);
+		backUrls4Page.put("missions/", Consts.angarTab);
+		backUrls4Page.put("Advanced", Consts.angarTab);
 	}
 	protected String currentURL;
 	protected String pathToPage;
@@ -79,8 +83,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	// Start Tags
-	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes,
-			final int pos) {
+	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes, final int pos) {
 
 	};
 
@@ -194,6 +197,9 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		}
 		if (tag == Tag.TD) {
 			handleEndTagTD(tag, pos);
+			if (checkActive) {
+				checkActive = false;
+			}
 		}
 		if (tag == Tag.A) {
 			handleEndTagA(tag, pos);

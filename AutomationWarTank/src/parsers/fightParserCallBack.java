@@ -98,7 +98,8 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 	private void setDelayBeforeFight(String hREF) {
 		getResponse().setRedirectUrl(hREF);
 		if (timeLeft != null) {
-			getResponse().setDelay(timeLeft.getTime() + TimeZone.getDefault().getOffset(timeLeft.getTime()));
+			long delay = timeLeft.getTime() + TimeZone.getDefault().getOffset(timeLeft.getTime());
+			getResponse().setDelay(delay>5?delay-5:delay);
 		}
 		setNoMoreCalculte(true);
 	}
@@ -194,23 +195,24 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 				getResponse().setDelay(0);
 				GlobalVars.logger.Logging("Use Repair!");
 			} else {
-				if (linksBody.get(MANEUVER_LINK).contains("Maneuver")) {
+/*				if (linksBody.get(MANEUVER_LINK).contains("Maneuver")) {
 					getResponse().setRedirectUrl(links.get(MANEUVER_LINK));
 					getResponse().setDelay(0);
 					GlobalVars.logger.Logging("Maneuver!");
-				} else {
+				} else {*/
 
 					if (isEnemyAllied()) {
 						skipFriend();
 					} else {
 						prepareForShot();
 					}
-				}
+			//	}
 			}
 		}
 
 		PrintStream printStream;
 		try {
+			fighterLog.write("\r\n======================END ITERACTION =====================\r\n");
 			printStream = new PrintStream(new FileOutputStream(GlobalVars.config.getFighterLogFileName(), true));
 			printStream.print(fighterLog.toString());
 			printStream.close();

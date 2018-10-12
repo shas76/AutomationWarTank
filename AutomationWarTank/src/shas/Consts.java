@@ -30,7 +30,7 @@ public final class Consts {
 	public static final List<String> COMMANDS = Arrays.asList("stop", "reloadconfig");
 	public static final int RMI_SERVER_PORT = 2099;
 	// static int printResponseBoby = 0;
-	public static final int ENEMY_DURABILITY_TO_SHOT = 2000;
-	public static final long MAX_INTERVAL_BETWEEN_SHOT = 6050;
-	public static final long MIN_INTERVAL_BETWEEN_SHOT = 4000;
+	public static final int ENEMY_DURABILITY_TO_SHOT = 2250;
+	public static final long MAX_INTERVAL_BETWEEN_SHOT = 7050;
+	public static final long MIN_INTERVAL_BETWEEN_SHOT = 4050;
 }
