@@ -153,7 +153,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		if (tag == Tag.A) {
 			String hREF = getHREF(attributes.getAttribute(Attribute.HREF));
 			handleStartTagA(hREF, tag, attributes, pos);
-			if (doCheckActive && linksToCheckIsActive.stream().anyMatch(lnk -> hREF.contains(lnk))) {
+			if (doCheckActive && linksToCheckIsActive.stream().anyMatch(lnk -> hREF.contains(lnk))
+					&& !hREF.contains("missions/.")) {
 				currentActiveHREF = hREF;
 				checkActive = true;
 			}
