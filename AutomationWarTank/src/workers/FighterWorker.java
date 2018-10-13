@@ -32,11 +32,15 @@ public class FighterWorker extends AbstractWorker {
 					request = getHttpRequestProcessor().processRequest(
 							new Request(Consts.siteAddress + GlobalVars.config.getBattleURLs()[index]));
 					delay = request.getPreviouceResponse().getDelay() / Consts.ONE_SECOND - 30;
-					GlobalVars.logger.Logging("Waiting for battle!!! URL " + request.getUrl() + " seconds " + delay,
+					GlobalVars.logger.Logging("Waiting for battle!!! URL=" + request.getUrl() + " seconds " + delay,
 							this);
 					break;
 				}
 				index++;
+			}
+			if (request  == null){
+				delay = 900;
+				GlobalVars.logger.Logging("Waiting for battle!!! URL=NO URL!!!  seconds " + delay, this);
 			}
 		} else {
 			GlobalVars.logger.Logging("Goto battle!!! URL" + request.getUrl(), this);
