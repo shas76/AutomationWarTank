@@ -16,6 +16,8 @@ import java.util.TimeZone;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Tag;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 import shas.Consts;
 import shas.GlobalVars;
 
@@ -99,7 +101,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 		getResponse().setRedirectUrl(hREF);
 		if (timeLeft != null) {
 			long delay = timeLeft.getTime() + TimeZone.getDefault().getOffset(timeLeft.getTime());
-			getResponse().setDelay(delay>5?delay-5:delay);
+			getResponse().setDelay(delay/Consts.ONE_SECOND>5?delay-5*Consts.ONE_SECOND:delay);
 		}
 		setNoMoreCalculte(true);
 	}
