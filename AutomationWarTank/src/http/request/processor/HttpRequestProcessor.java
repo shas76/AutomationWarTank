@@ -133,8 +133,6 @@ public class HttpRequestProcessor {
 			return new angarParserCallBack(URL);
 		if (lURL.contains(Consts.battleTab.toLowerCase()))
 			return new battleParserCallBack(URL);
-		if (lURL.contains(Consts.buildingsTab.toLowerCase()))
-			return new buildingsParserCallBack(URL);
 		if (lURL.contains(Consts.convoyTab.toLowerCase()))
 			return new convoyParserCallBack(URL);
 		if (lURL.contains(Consts.mineTab.toLowerCase()))
