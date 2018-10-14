@@ -21,7 +21,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 
 	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank", "awardLink",
 			"market", "buyGold", "freeBoostLink", "takeProductionLink", Consts.buildingsTab, Consts.convoyTab,
-			"missions/", "Advanced");
+			"missions/", "Advanced", "profile/", "/skills/", "takeFuelLink");
 	private List<String> pagesNotCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank");
 
 	private String currentActiveHREF = "";
@@ -31,6 +31,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		urlToPathOfPage.put("Armory", Consts.ProductionPath);
 		urlToPathOfPage.put("Bank", Consts.ProductionPath);
 		urlToPathOfPage.put("missions", "/missions/");
+		urlToPathOfPage.put("profile", "/profile/");
 	}
 	private Map<String, String> backUrls4Page = new HashMap<String, String>();
 	{
@@ -74,7 +75,13 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	protected String formHREF(String relativeHREF) {
-		String relativePathToPage = pathToPage + relativeHREF;
+		String relativePathToPage;
+		if (relativeHREF.contains("..")) {
+			relativePathToPage = relativeHREF.replace("..", "");
+		} else {
+			relativePathToPage = pathToPage + relativeHREF;
+		}
+		GlobalVars.logger.Logging("relativeHREF: "+relativeHREF+" >>>> relativePathToPage:" +relativePathToPage);
 		return Consts.siteAddress + relativePathToPage.replace("//", "/");
 	}
 

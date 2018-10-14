@@ -10,6 +10,9 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class Test {
 	public static void main(String[] args) {
+		
+		String ffff = "../sfsfzsfzs".replace("..", "");
+		System.out.println(ffff);
 		Map<String, String> urlToPathOfPage = new HashMap<String, String>();
 
 		urlToPathOfPage.put("Mine", Consts.ProductionPath + "1");

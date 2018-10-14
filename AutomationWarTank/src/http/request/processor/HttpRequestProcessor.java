@@ -21,11 +21,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import parsers.CoinsParserCallBack;
 import parsers.angarParserCallBack;
 import parsers.armoryParserCallBack;
 import parsers.bankParserCallBack;
 import parsers.battleParserCallBack;
-import parsers.buildingsParserCallBack;
 import parsers.convoyParserCallBack;
 import parsers.fightParserCallBack;
 import parsers.goToURLFinderParserCallBack;
@@ -143,6 +143,8 @@ public class HttpRequestProcessor {
 			return new polygonParserCallBack(URL);
 		if (lURL.contains(Consts.bankTab.toLowerCase()))
 			return new bankParserCallBack(URL);
+		if (lURL.contains(Consts.coinsTab.toLowerCase()))
+			return new CoinsParserCallBack(URL);
 		if (lURL.equals(Consts.siteAddress) || lURL.contains(Consts.SHOW_SIGNIN_LINK.toLowerCase()))
 			return new loginPageParserCallBack(URL);
 		if (isURLBattle(URL))
