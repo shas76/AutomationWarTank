@@ -3,7 +3,6 @@ package workers;
 import java.util.Random;
 
 import http.request.processor.Request;
-import http.request.processor.Response;
 import shas.Consts;
 import shas.GlobalVars;
 

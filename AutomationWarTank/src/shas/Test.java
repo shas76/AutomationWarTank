@@ -6,6 +6,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class Test {
@@ -21,7 +23,7 @@ public class Test {
 		urlToPathOfPage.put("missions", "/missions/");
 
 		System.out.println(urlToPathOfPage.entrySet().stream().filter(entry -> "Armory".contains(entry.getKey()))
-				.map(Map.Entry::getValue).findFirst().get());
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 		System.out.println(urlToPathOfPage.entrySet().stream()
 				.filter(entry -> (Consts.ProductionPath + "2").contains(entry.getValue())).map(Map.Entry::getKey)
 				.findFirst().get());

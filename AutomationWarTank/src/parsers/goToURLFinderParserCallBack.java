@@ -1,10 +1,8 @@
 package parsers;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;
 import javax.swing.text.html.HTML.Tag;
@@ -13,37 +11,23 @@ import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import http.request.processor.Response;
 import shas.Consts;
 import shas.GlobalVars;
+import utils.URLsConvertor;
 
 public class goToURLFinderParserCallBack extends ParserCallback {
+
+	
 	private Response response = new Response("", Consts.GET_METHOD, 0);
 	private boolean noMoreCalculte = false;
 	private boolean checkActive = false;
 
-	private List<String> linksToCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank", "awardLink",
-			"market", "buyGold", "freeBoostLink", "takeProductionLink", Consts.buildingsTab, Consts.convoyTab,
-			"missions/", "Advanced", "profile/", "/skills/", "takeFuelLink");
-	private List<String> pagesNotCheckIsActive = Arrays.asList("Mine", "polygon", "Armory", "Bank");
+	private List<String> linksToCheckIsActive = Arrays.asList(Consts.MINE, Consts.POLYGON, Consts.ARMORY, Consts.BANK,
+			Consts.AWARD_LINK, Consts.MARKET, Consts.BUY_GOLD, Consts.FREE_BOOST_LINK, Consts.TAKE_PRODUCTION_LINK,
+			Consts.buildingsTab, Consts.convoyTab, Consts.MISSIONS + "/", Consts.ADVANCED, Consts.PROFILE + "/",
+			Consts.SKILLS, Consts.TAKE_FUEL_LINK, Consts.cwTab, Consts.PROVISION_LINK);
+	private List<String> pagesNotCheckIsActive = Arrays.asList(Consts.MINE, Consts.POLYGON, Consts.ARMORY, Consts.BANK);
 
 	private String currentActiveHREF = "";
-	private Map<String, String> urlToPathOfPage = new HashMap<String, String>();
-	{
-		urlToPathOfPage.put("Mine", Consts.ProductionPath);
-		urlToPathOfPage.put("Armory", Consts.ProductionPath);
-		urlToPathOfPage.put("Bank", Consts.ProductionPath);
-		urlToPathOfPage.put("missions", "/missions/");
-		urlToPathOfPage.put("profile", "/profile/");
-	}
-	private Map<String, String> backUrls4Page = new HashMap<String, String>();
-	{
-		backUrls4Page.put("Mine", Consts.buildingsTab);
-		backUrls4Page.put("Armory", Consts.buildingsTab);
-		backUrls4Page.put("Bank", Consts.buildingsTab);
-		backUrls4Page.put("polygon", Consts.buildingsTab);
-		backUrls4Page.put(Consts.buildingsTab, Consts.angarTab);
-		backUrls4Page.put(Consts.convoyTab, Consts.angarTab);
-		backUrls4Page.put("missions/", Consts.angarTab);
-		backUrls4Page.put("Advanced", Consts.angarTab);
-	}
+
 	protected String currentURL;
 	protected String pathToPage;
 	protected boolean doCheckActive;
@@ -52,14 +36,9 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		super();
 		this.currentURL = currentURL;
 		doCheckActive = !pagesNotCheckIsActive.stream().anyMatch(lnk -> currentURL.contains(lnk));
-		pathToPage = getPath4URL(currentURL, urlToPathOfPage, "/");
-		String backPath = getPath4URL(currentURL, backUrls4Page, "");
+		pathToPage = URLsConvertor.getPath4URL(currentURL, URLsConvertor.urlToPathOfPage, "/");
+		String backPath = URLsConvertor.getPath4URL(currentURL, URLsConvertor.backUrls4Page, "");
 		getResponse().setRedirectUrl("".equals(backPath) ? backPath : Consts.siteAddress + backPath);
-	}
-
-	protected String getPath4URL(String url, Map<String, String> listOfUrls4Page, String defaultValue) {
-		return listOfUrls4Page.entrySet().stream().filter(entry -> currentURL.contains(entry.getKey()))
-				.map(Map.Entry::getValue).findFirst().orElse(defaultValue);
 	}
 
 	public Response getResponse() {
@@ -81,7 +60,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		} else {
 			relativePathToPage = pathToPage + relativeHREF;
 		}
-		GlobalVars.logger.Logging("relativeHREF: "+relativeHREF+" >>>> relativePathToPage:" +relativePathToPage);
+		GlobalVars.logger.Logging("relativeHREF: " + relativeHREF + " >>>> relativePathToPage:" + relativePathToPage);
 		return Consts.siteAddress + relativePathToPage.replace("//", "/");
 	}
 
@@ -90,7 +69,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	// Start Tags
-	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes, final int pos) {
+	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes,
+			final int pos) {
 
 	};
 
@@ -161,7 +141,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 			String hREF = getHREF(attributes.getAttribute(Attribute.HREF));
 			handleStartTagA(hREF, tag, attributes, pos);
 			if (doCheckActive && linksToCheckIsActive.stream().anyMatch(lnk -> hREF.contains(lnk))
-					&& !hREF.contains("missions/.")) {
+					&& !hREF.contains(Consts.MISSIONS+"/.")) {
 				currentActiveHREF = hREF;
 				checkActive = true;
 			}
@@ -186,6 +166,12 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 			return;
 		handleTextOfNode(data, pos);
 		if (checkActive && new String(data).equals("+")) {
+			Map<String, String> vURL = URLsConvertor.getURL2VURLByUrl(currentActiveHREF);
+			if (!vURL.isEmpty()) {
+				String key = (String) (vURL.keySet().toArray())[0];
+				GlobalVars.logger.Logging("Replace Vurl:" + key + " by " + vURL.get(key) + " in " + currentActiveHREF);
+				currentActiveHREF.replace(key, vURL.get(key));
+			}
 			getResponse().setRedirectUrl(currentActiveHREF);
 			setNoMoreCalculte(true);
 			GlobalVars.logger.Logging("Goto to active URL:" + getResponse());

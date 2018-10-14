@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.text.html.parser.ParserDelegator;
 
@@ -34,6 +35,7 @@ import parsers.mineParserCallBack;
 import parsers.polygonParserCallBack;
 import shas.Consts;
 import shas.GlobalVars;
+import utils.URLsConvertor;
 
 public class HttpRequestProcessor {
 
@@ -49,10 +51,11 @@ public class HttpRequestProcessor {
 			Response responce = processRequestInternal(new Request(Consts.siteAddress));
 			responce = processRequestInternal(new Request(responce.getRedirectUrl()));
 			// login
-			processRequestInternal(new Request(responce.getRedirectUrl(), Consts.POST_METHOD, Arrays.asList(
-					new BasicNameValuePair("id1_hf_0", ""),
-					new BasicNameValuePair("login", GlobalVars.config.getUserName()), new BasicNameValuePair(
-							"password", GlobalVars.config.getPassword())), responce));
+			processRequestInternal(new Request(responce.getRedirectUrl(), Consts.POST_METHOD,
+					Arrays.asList(new BasicNameValuePair("id1_hf_0", ""),
+							new BasicNameValuePair("login", GlobalVars.config.getUserName()),
+							new BasicNameValuePair("password", GlobalVars.config.getPassword())),
+					responce));
 			return httpclient;
 
 		}
@@ -73,11 +76,19 @@ public class HttpRequestProcessor {
 		if ("".equals(request.getUrl()) || request.getUrl() == null)
 			throw new Exception("Empty URL !!!");
 		HttpRequestBase httpRequest = null;
+		String uRL = request.getUrl();
+		Map<String, String> vURL = URLsConvertor.getURL2VURLByVUrl(uRL);
+		if (!vURL.isEmpty()) {
+			String key = (String) (vURL.keySet().toArray())[0];
+			GlobalVars.logger.Logging("Replace Vurl:" + vURL.get(key) + " by " + key + " in " + uRL);
+			uRL.replace(vURL.get(key), key);
+
+		}
 		if (Consts.GET_METHOD.equals(request.getMethod())) {
-			httpRequest = new HttpGet(request.getUrl());
+			httpRequest = new HttpGet(uRL);
 		} else {
 			if (Consts.POST_METHOD.equals(request.getMethod().toUpperCase())) {
-				httpRequest = new HttpPost(request.getUrl());
+				httpRequest = new HttpPost(uRL);
 				if (request.getParameters() != null) {
 					((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(request.getParameters()));
 				}
@@ -86,8 +97,8 @@ public class HttpRequestProcessor {
 		return getHttpclient().execute(httpRequest);
 	}
 
-	private String readContent(HttpResponse siteResponse) throws UnsupportedEncodingException, IllegalStateException,
-			IOException {
+	private String readContent(HttpResponse siteResponse)
+			throws UnsupportedEncodingException, IllegalStateException, IOException {
 		HttpEntity entity = siteResponse.getEntity();
 		Header contentEncoding = entity.getContentEncoding();
 		String charSet = "UTF-8";

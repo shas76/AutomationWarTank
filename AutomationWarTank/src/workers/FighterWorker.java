@@ -3,7 +3,6 @@ package workers;
 import java.util.Date;
 
 import http.request.processor.Request;
-import http.request.processor.Response;
 import shas.AutomationWarTank;
 import shas.Consts;
 import shas.GlobalVars;

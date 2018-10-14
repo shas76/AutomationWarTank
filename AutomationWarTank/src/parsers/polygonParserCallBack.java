@@ -3,7 +3,6 @@ package parsers;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Tag;
 
-import shas.Consts;
 import shas.GlobalVars;
 
 public class polygonParserCallBack extends goToURLFinderParserCallBack {
