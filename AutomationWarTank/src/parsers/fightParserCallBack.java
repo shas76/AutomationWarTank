@@ -99,7 +99,7 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 		getResponse().setRedirectUrl(hREF);
 		if (timeLeft != null) {
 			long delay = timeLeft.getTime() + TimeZone.getDefault().getOffset(timeLeft.getTime());
-			getResponse().setDelay(delay/Consts.ONE_SECOND>5?delay-5*Consts.ONE_SECOND:delay);
+			getResponse().setDelay(delay / Consts.ONE_SECOND > 5 ? delay - 5 * Consts.ONE_SECOND : delay);
 		}
 		setNoMoreCalculte(true);
 	}
@@ -195,18 +195,19 @@ public class fightParserCallBack extends goToURLFinderParserCallBack {
 				getResponse().setDelay(0);
 				GlobalVars.logger.Logging("Use Repair!");
 			} else {
-/*				if (linksBody.get(MANEUVER_LINK).contains("Maneuver")) {
-					getResponse().setRedirectUrl(links.get(MANEUVER_LINK));
-					getResponse().setDelay(0);
-					GlobalVars.logger.Logging("Maneuver!");
-				} else {*/
+				/*
+				 * if (linksBody.get(MANEUVER_LINK).contains("Maneuver")) {
+				 * getResponse().setRedirectUrl(links.get(MANEUVER_LINK));
+				 * getResponse().setDelay(0);
+				 * GlobalVars.logger.Logging("Maneuver!"); } else {
+				 */
 
-					if (isEnemyAllied()) {
-						skipFriend();
-					} else {
-						prepareForShot();
-					}
-			//	}
+				if (isEnemyAllied()) {
+					skipFriend();
+				} else {
+					prepareForShot();
+				}
+				// }
 			}
 		}
 

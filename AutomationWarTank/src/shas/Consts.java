@@ -20,12 +20,12 @@ public final class Consts {
 	public static final String BUY_GOLD = "buyGold";
 	public static final String MARKET = "market";
 	public static final String AWARD_LINK = "awardLink";
-	
+
 	public static final String BANK = "Bank";
 	public static final String ARMORY = "Armory";
 	public static final String POLYGON = "polygon";
-	public static final String MINE = "Mine";	
-	
+	public static final String MINE = "Mine";
+
 	public static final String siteAddress = "http://wartank.net";
 	public static final String ProductionPath = "/production/";
 	public static final String timeFormat = "%tF %tT ";

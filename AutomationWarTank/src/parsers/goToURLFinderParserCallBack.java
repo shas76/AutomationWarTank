@@ -15,7 +15,6 @@ import utils.URLsConvertor;
 
 public class goToURLFinderParserCallBack extends ParserCallback {
 
-	
 	private Response response = new Response("", Consts.GET_METHOD, 0);
 	private boolean noMoreCalculte = false;
 	private boolean checkActive = false;
@@ -60,7 +59,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 		} else {
 			relativePathToPage = pathToPage + relativeHREF;
 		}
-		GlobalVars.logger.Logging("relativeHREF: " + relativeHREF + " >>>> relativePathToPage:" + relativePathToPage);
+		GlobalVars.logger.Logging("\r\n               relativeHREF: " + relativeHREF
+				+ "\r\n    >>>> relativePathToPage: " + relativePathToPage);
 		return Consts.siteAddress + relativePathToPage.replace("//", "/");
 	}
 
@@ -69,8 +69,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 	}
 
 	// Start Tags
-	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes,
-			final int pos) {
+	protected void handleStartTagA(final String hREF, final Tag tag, final MutableAttributeSet attributes, final int pos) {
 
 	};
 
@@ -141,7 +140,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 			String hREF = getHREF(attributes.getAttribute(Attribute.HREF));
 			handleStartTagA(hREF, tag, attributes, pos);
 			if (doCheckActive && linksToCheckIsActive.stream().anyMatch(lnk -> hREF.contains(lnk))
-					&& !hREF.contains(Consts.MISSIONS+"/.")) {
+					&& !hREF.contains(Consts.MISSIONS + "/.")) {
 				currentActiveHREF = hREF;
 				checkActive = true;
 			}
@@ -169,8 +168,9 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 			Map<String, String> vURL = URLsConvertor.getURL2VURLByUrl(currentActiveHREF);
 			if (!vURL.isEmpty()) {
 				String key = (String) (vURL.keySet().toArray())[0];
-				GlobalVars.logger.Logging("Replace Vurl:" + key + " by " + vURL.get(key) + " in " + currentActiveHREF);
-				currentActiveHREF.replace(key, vURL.get(key));
+				GlobalVars.logger.Logging("    Replace VURL:" + key + " by " + vURL.get(key) + " in "
+						+ currentActiveHREF);
+				currentActiveHREF = currentActiveHREF.replace(key, vURL.get(key));
 			}
 			getResponse().setRedirectUrl(currentActiveHREF);
 			setNoMoreCalculte(true);

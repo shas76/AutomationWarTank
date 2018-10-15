@@ -18,3 +18,8 @@ AutomationWarTank/bin/
 /bin/
 ##.project
 ##.classpath
+
+
+AutomationWarTank/.settings/.rebel-remote.xml.bak
+AutomationWarTank/.settings/.rebel.xml.bak
+AutomationWarTank/src/rebel.xml

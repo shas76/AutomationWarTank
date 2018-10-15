@@ -17,21 +17,21 @@ public class Request implements Serializable {
 
 	private List<NameValuePair> parameters;
 
-	private Response previouceResponse ; 
-	
-	public Request( Response previouceResponse) {
-		this(previouceResponse.getRedirectUrl(),previouceResponse.getRedirectMethod(),null, previouceResponse);
+	private Response previouceResponse;
+
+	public Request(Response previouceResponse) {
+		this(previouceResponse.getRedirectUrl(), previouceResponse.getRedirectMethod(), null, previouceResponse);
 	}
-	
+
 	public Request(String url) {
 		this(url, Consts.GET_METHOD);
 	}
-	
+
 	public Request(String url, String method) {
 		this(url, method, null, null);
 	}
-	
-	public Request(String url, String method, List<NameValuePair> parameters, Response previouceResponse  ) {
+
+	public Request(String url, String method, List<NameValuePair> parameters, Response previouceResponse) {
 		super();
 		this.url = url;
 		this.method = method.toUpperCase();

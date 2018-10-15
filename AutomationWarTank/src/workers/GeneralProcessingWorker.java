@@ -17,7 +17,7 @@ public class GeneralProcessingWorker extends AbstractWorker {
 				if ("".equals(request.getUrl())) {
 					break;
 				}
-				
+
 				threadPause(Consts.ONE_SECOND);
 			}
 		}

@@ -12,8 +12,8 @@ public class URLsConvertor {
 		urlToPathOfPage.put(Consts.MINE, Consts.ProductionPath);
 		urlToPathOfPage.put(Consts.ARMORY, Consts.ProductionPath);
 		urlToPathOfPage.put(Consts.BANK, Consts.ProductionPath);
-		urlToPathOfPage.put(Consts.MISSIONS, "/"+Consts.MISSIONS+"/");
-		urlToPathOfPage.put(Consts.PROFILE, "/"+Consts.PROFILE+"/");
+		urlToPathOfPage.put(Consts.MISSIONS, "/" + Consts.MISSIONS + "/");
+		urlToPathOfPage.put(Consts.PROFILE, "/" + Consts.PROFILE + "/");
 	}
 	public static Map<String, String> backUrls4Page = new HashMap<String, String>();
 	static {
@@ -23,13 +23,13 @@ public class URLsConvertor {
 		backUrls4Page.put(Consts.POLYGON, Consts.buildingsTab);
 		backUrls4Page.put(Consts.buildingsTab, Consts.angarTab);
 		backUrls4Page.put(Consts.convoyTab, Consts.angarTab);
-		backUrls4Page.put(Consts.MISSIONS+"/", Consts.angarTab);
+		backUrls4Page.put(Consts.MISSIONS + "/", Consts.angarTab);
 		backUrls4Page.put(Consts.ADVANCED, Consts.angarTab);
 	}
 
 	private static Map<String, String> url2vurl = new HashMap<String, String>();
 	static {
-		url2vurl.put(Consts.cwTab, Consts.cwTab + "VirtualLink");
+		url2vurl.put(Consts.cwTab, "/VirtualLink2CW");
 	}
 
 	public static Map<String, String> getURL2VURLByUrl(String uRL) {

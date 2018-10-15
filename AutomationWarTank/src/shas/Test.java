@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class Test {
 	public static void main(String[] args) {
-		
+
 		String ffff = "../sfsfzsfzs".replace("..", "");
 		System.out.println(ffff);
 		Map<String, String> urlToPathOfPage = new HashMap<String, String>();
@@ -22,11 +22,17 @@ public class Test {
 		urlToPathOfPage.put("Bank", Consts.ProductionPath + "3");
 		urlToPathOfPage.put("missions", "/missions/");
 
-		System.out.println(urlToPathOfPage.entrySet().stream().filter(entry -> "Armory".contains(entry.getKey()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-		System.out.println(urlToPathOfPage.entrySet().stream()
-				.filter(entry -> (Consts.ProductionPath + "2").contains(entry.getValue())).map(Map.Entry::getKey)
-				.findFirst().get());
+		System.out.println("sfsfs\r\nsfsfs");
+
+		/*
+		 * System.out.println(urlToPathOfPage.entrySet().stream().filter(entry
+		 * -> "Armory".contains(entry.getKey()))
+		 * .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+		 * System.out.println(urlToPathOfPage.entrySet().stream() .filter(entry
+		 * -> (Consts.ProductionPath +
+		 * "2").contains(entry.getValue())).map(Map.Entry::getKey)
+		 * .findFirst().get());
+		 */
 	}
 
 }

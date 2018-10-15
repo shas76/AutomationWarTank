@@ -37,7 +37,7 @@ public class FighterWorker extends AbstractWorker {
 				}
 				index++;
 			}
-			if (request  == null){
+			if (request == null) {
 				delay = 900;
 				GlobalVars.logger.Logging("Waiting for battle!!! URL=NO URL!!!  seconds " + delay, this);
 			}

@@ -51,11 +51,10 @@ public class HttpRequestProcessor {
 			Response responce = processRequestInternal(new Request(Consts.siteAddress));
 			responce = processRequestInternal(new Request(responce.getRedirectUrl()));
 			// login
-			processRequestInternal(new Request(responce.getRedirectUrl(), Consts.POST_METHOD,
-					Arrays.asList(new BasicNameValuePair("id1_hf_0", ""),
-							new BasicNameValuePair("login", GlobalVars.config.getUserName()),
-							new BasicNameValuePair("password", GlobalVars.config.getPassword())),
-					responce));
+			processRequestInternal(new Request(responce.getRedirectUrl(), Consts.POST_METHOD, Arrays.asList(
+					new BasicNameValuePair("id1_hf_0", ""),
+					new BasicNameValuePair("login", GlobalVars.config.getUserName()), new BasicNameValuePair(
+							"password", GlobalVars.config.getPassword())), responce));
 			return httpclient;
 
 		}
@@ -80,9 +79,8 @@ public class HttpRequestProcessor {
 		Map<String, String> vURL = URLsConvertor.getURL2VURLByVUrl(uRL);
 		if (!vURL.isEmpty()) {
 			String key = (String) (vURL.keySet().toArray())[0];
-			GlobalVars.logger.Logging("Replace Vurl:" + vURL.get(key) + " by " + key + " in " + uRL);
-			uRL.replace(vURL.get(key), key);
-
+			GlobalVars.logger.Logging("    Replace VURL:" + vURL.get(key) + " by " + key + " in " + uRL);
+			uRL = uRL.replace(vURL.get(key), key);
 		}
 		if (Consts.GET_METHOD.equals(request.getMethod())) {
 			httpRequest = new HttpGet(uRL);
@@ -97,8 +95,8 @@ public class HttpRequestProcessor {
 		return getHttpclient().execute(httpRequest);
 	}
 
-	private String readContent(HttpResponse siteResponse)
-			throws UnsupportedEncodingException, IllegalStateException, IOException {
+	private String readContent(HttpResponse siteResponse) throws UnsupportedEncodingException, IllegalStateException,
+			IOException {
 		HttpEntity entity = siteResponse.getEntity();
 		Header contentEncoding = entity.getContentEncoding();
 		String charSet = "UTF-8";
