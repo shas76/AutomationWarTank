@@ -25,11 +25,17 @@ public class FighterWorker extends AbstractWorker {
 			int index = 0;
 			for (Date time : GlobalVars.config.getBattleTimes()) {
 				if (time.getTime() > currentTime.getTime()) {
-					endTime = new Date();
-					endTime.setHours(time.getHours());
-					endTime.setMinutes(time.getMinutes() + 2);
+
 					request = getHttpRequestProcessor().processRequest(
 							new Request(Consts.siteAddress + GlobalVars.config.getBattleURLs()[index]));
+					endTime = new Date();
+					endTime.setHours(time.getHours());
+					if (request.getUrl().contains(Consts.battleTab)){
+						endTime.setMinutes(time.getMinutes() + 17);
+					}else{
+						endTime.setMinutes(time.getMinutes() + 2);
+					}
+					
 					delay = request.getPreviouceResponse().getDelay() / Consts.ONE_SECOND - 30;
 					GlobalVars.logger.Logging("Waiting for battle!!! URL=" + request.getUrl() + " seconds " + delay,
 							this);

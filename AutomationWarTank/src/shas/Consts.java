@@ -41,6 +41,7 @@ public final class Consts {
 	public static final String pveTab = "/pve"; // Campaigns
 	public static final String cwTab = "/cw"; // war
 	public static final String dmTab = "/dm"; // Skirmish
+	public static final String bitvaTab = "/bitva"; // Divisions battle
 	public static final String REFRESH = "refresh";
 	public static final int ONE_SECOND = 1000;
 	public static final int msInMinunte = 60 * ONE_SECOND;

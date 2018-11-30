@@ -21,8 +21,8 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 
 	private List<String> linksToCheckIsActive = Arrays.asList(Consts.MINE, Consts.POLYGON, Consts.ARMORY, Consts.BANK,
 			Consts.AWARD_LINK, Consts.MARKET, Consts.BUY_GOLD, Consts.FREE_BOOST_LINK, Consts.TAKE_PRODUCTION_LINK,
-			Consts.buildingsTab, Consts.convoyTab, Consts.MISSIONS + "/", Consts.ADVANCED, Consts.PROFILE + "/",
-			Consts.SKILLS, Consts.TAKE_FUEL_LINK, Consts.cwTab, Consts.PROVISION_LINK);
+			Consts.buildingsTab, Consts.convoyTab, Consts.MISSIONS + "/", Consts.ADVANCED, Consts.SKILLS,
+			Consts.TAKE_FUEL_LINK, Consts.cwTab, Consts.PROVISION_LINK);
 	private List<String> pagesNotCheckIsActive = Arrays.asList(Consts.MINE, Consts.POLYGON, Consts.ARMORY, Consts.BANK);
 
 	private String currentActiveHREF = "";
@@ -140,7 +140,7 @@ public class goToURLFinderParserCallBack extends ParserCallback {
 			String hREF = getHREF(attributes.getAttribute(Attribute.HREF));
 			handleStartTagA(hREF, tag, attributes, pos);
 			if (doCheckActive && linksToCheckIsActive.stream().anyMatch(lnk -> hREF.contains(lnk))
-					&& !hREF.contains(Consts.MISSIONS + "/.")) {
+					&& !hREF.contains(Consts.MISSIONS + "/.") && !hREF.contains(Consts.PROFILE + "/.")) {
 				currentActiveHREF = hREF;
 				checkActive = true;
 			}
